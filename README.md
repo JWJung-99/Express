@@ -1,12 +1,4 @@
-# Express
-
-<br />
-
-## 0️⃣ 목차
-
-1. [Express 설정](#1️⃣-express-설정)
-
-<br />
+# Express 설정
 
 ## 1️⃣ Express 설정
 
@@ -77,7 +69,3 @@
 > ```
 
 <br />
-
-## 📖 참고
-
-- [Express.js 공식문서](https://expressjs.com/)
