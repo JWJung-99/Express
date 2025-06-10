@@ -3,7 +3,11 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+	console.log('Middleware test 0');
+	next();
+});
 
 app.listen(port, () => {
 	console.log(`Example app listening on port ${port}`);
@@ -31,9 +35,20 @@ const data = [
 	},
 ];
 
-app.get('/notes', (req, res) => {
-	res.send(data);
-});
+app.get(
+	'/notes',
+	(req, res, next) => {
+		console.log('Middleware test 1');
+		next();
+	},
+	(req, res, next) => {
+		console.log('Middleware test 2');
+		next();
+	},
+	(req, res) => {
+		res.send(data);
+	}
+);
 
 app.post('/notes', (req, res) => {
 	console.log(req.body);
