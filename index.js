@@ -2,18 +2,41 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
-app.get('/', (req, res) => {
-	res.send('Hello World!');
-});
+app.use(express.json());
+app.use(express.urlencoded());
 
 app.listen(port, () => {
 	console.log(`Example app listening on port ${port}`);
 });
 
-app.get('/test', (req, res) => {
-	res.send('Hello Test!');
+// app.get('/', (req, res) => {
+// 	res.send('Hello World!');
+// });
+
+const data = [
+	{
+		id: 1,
+		name: 'name-1',
+		note: 'note-1',
+	},
+	{
+		id: 2,
+		name: 'name-2',
+		note: 'note-2',
+	},
+	{
+		id: 3,
+		name: 'name-3',
+		note: 'note-3',
+	},
+];
+
+app.get('/notes', (req, res) => {
+	res.send(data);
 });
 
-app.post('/test', (req, res) => {
-	res.send('Got a POST request');
+app.post('/notes', (req, res) => {
+	console.log(req.body);
+	data.push(req.body);
+	res.sendStatus(201);
 });
