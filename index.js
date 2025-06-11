@@ -56,8 +56,20 @@ app.post('/notes', (req, res) => {
 	res.sendStatus(201);
 });
 
+// Path Parameter
 app.get('/note/:noteId', (req, res) => {
 	console.log(req.params);
 	const item = data.filter((item) => item.id === Number(req.params.noteId));
+	res.send(item);
+});
+
+// Query Parameter
+app.get('/note', (req, res) => {
+	console.log(req.query);
+	const { id } = req.query;
+
+	if (!id) res.send({});
+
+	const item = data.filter((item) => item.id === Number(id));
 	res.send(item);
 });
