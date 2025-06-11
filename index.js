@@ -59,7 +59,7 @@ app.post('/notes', (req, res) => {
 // Path Parameter
 app.get('/note/:noteId', (req, res) => {
 	console.log(req.params);
-	const item = data.filter((item) => item.id === Number(req.params.noteId));
+	const item = data.find((item) => item.id === Number(req.params.noteId));
 	res.send(item);
 });
 
