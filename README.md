@@ -387,7 +387,57 @@
 
 ### Query Parameter
 
+-  URL 뒤에 물음표(`?`)와 함께 붙는 키-값(Key-Value) 쌍이다. 특정한 조건을 적용하고 싶을 때 사용하며, 여러 개의 Key-Value 쌍을 and 기호(&)로 구분하여 나타낸다.
 
+  ```
+  ex) https://trifly.vercel.app/ticket-result?originLocationCode=ICN&destinationLocationCode=FUK&departureDate=2025-06-21&returnDate=2025-06-23&adults=1&nonStop=true&currencyCode=KRW
+  ```
+
+- HTTP의 GET, DELETE 요청에서 사용하고, 주로 유일 값을 식별하기 위한 용도가 아니라 다음과 같이 옵션을 주는 경우 사용한다.
+
+  - 데이터 필터링
+  - 데이터 정렬
+  - 데이터 수 조절 (페이지네이션)
+  - 검색 등
+
+- Query Parameter를 잘 받아오는지 확인하기 위해 다음과 같이 간단한 `get` 메서드를 작성한다.
+
+  ```js
+  app.get('/note', (req, res) => {
+    console.log(req.query);
+    res.send('OK Query');
+  });
+  ```
+  
+  - 브라우저에서 `http://localhost:3000/note?id=1&name=name-1`로 이동하면 `log`에서 다음과 같이 query parameter를 잘 받아오는 것을 확인할 수 있다.
+
+    |**GET 요청**|**Query Parameter 확인**|
+    |:---:|:---:|
+    |<img alt="image" src="https://github.com/user-attachments/assets/1ccddea1-ddf8-4118-8d27-76e92d06d8f3" />|<img alt="image" src="https://github.com/user-attachments/assets/ab0f8d7d-7ac3-4739-942a-269e3ba9042e" />|
+
+  - 이어서 Query Parameter를 이용해 원하는 데이터만 받아올 수 있도록 코드를 수정한다.
+
+    ```js
+    app.get('/note', (req, res) => {
+      console.log(req.query);
+      const { id } = req.query;
+
+      // id 값이 없다면 응답으로 빈 배열을 전송한다.
+      if (!id) res.send([]);
+    
+      const item = data.filter((item) => item.id === Number(id));
+      res.send(item);
+    });
+    ```
+
+    - 브라우저에서 `http://localhost:3000/note?id=1`로 이동하면 다음과 같이 `id`가 `1`인 데이터만 잘 불러오는 것을 확인할 수 있다.
+
+      <img width="50%" alt="image" src="https://github.com/user-attachments/assets/6366f9eb-7983-4321-8c2a-1f8218e6d49e" />
+      
+<br />
+
+### HTTP PUT
+    
 <br />
 
 ## :book: 참고
