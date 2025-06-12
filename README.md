@@ -436,8 +436,115 @@
       
 <br />
 
-### HTTP PUT
+### HTTP PUT, PATCH
+
+- PUT과 PATCH 모두 업데이트를 위해 사용하는 HTTP 메서드이다.
+
+  - PUT 메서드는 새로운 리소스를 생성하거나(Create), 대상 리소스를 나타내는 데이터를 대체(Update)한다. POST 메서드와의 차이점은 **멱등성**을 가진다는 것이다. 멱등성이란 동일한 요청을 한 번 보내는 것과 여러 번 연속으로 보내는 것이 같은 효과를 지니고, 서버의 상태도 동일하게 남는 것을 의미한다. 따라서 PUT 요청을 여러 번 반복해서 보내도 서버의 상태는 동일하다.
+
+    - 성공적인 응답은 `200`번 대 Status Code로 확인할 수 있는데,
+
+      - 대상 리소스를 나타내는 데이터가 없고 PUT 요청이 성공적으로 하나를 새로 생성한 경우 `201 Created` 응답을 전송한다.
+      - 대상 리소스를 나타내는 데이터가 있고, PUT 요청이 성공적으로 수정한 경우 `200(OK)` 또는 `204(No Content)` 응답을 전송한다.
+
+  - PATCH 메서드는 리소스를 부분적으로 수정(Update)한다. PUT 메서드는 문서 전체의 완전한 교체만을 허용하는 반면, PATCH 메서드는 멱등성을 가지지 않아 동일한 요청이 다른 리소스에게 부수 효과를 일으킬 수도 있다.
+
+    - 성공적인 응답은 `200`번 대 Status Code로 확인할 수 있는데,
+
+      - 응답이 유의미한 데이터를 포함한다면 업데이트 된 데이터를 출력하며 `200(OK)`를 전송한다.
+      - 응답이 유의미한 데이터를 포함하지 않는다면 `204(No Content)`를 전송한다.
+
+- 데이터를 `request.body`로 받아 데이터를 업데이트하는 `put` 메서드를 작성해보자.
+
+  ```js
+  app.put('/note', (req, res) => {
+    const { id, note, name } = req.body;
+  
+    if (!id) res.sendStatus(400);
+    if (!note) res.sendStatus(400);
+    if (!name) res.sendStatus(400);
+  
+    // 1. Array.findIndex를 이용해 같은 id 값을 찾는다.
+    const index = data.findIndex((item) => item.id === id);
+
+    // 2. 찾은 id 값을 이용해 원하는 데이터를 변경한다.
+    data[index].note = note;
+    console.log(data);
+    res.sendStatus(204);
+  });
+  ```
+
+  - `id`가 `2`인 데이터의 `note` 값을 업데이트 후 PUT 요청을 보내면 다음과 같이 데이터가 업데이트 되는 것을 확인할 수 있다.
+
+    |**PUT 요청**|**GET 요청**|
+    |:---:|:---:|
+    |<img alt="image" src="https://github.com/user-attachments/assets/593b529a-c97d-431c-a9b7-adb2c59118f4" />|<img alt="image" src="https://github.com/user-attachments/assets/02d6eac2-e4f5-4380-82be-4cb5b53550fc" />|
+
+<br />
+
+### HTTP DELETE
+
+- DELETE는 지정한 리소스를 삭제하는 HTTP 메서드이다.
+
+  - 성공적인 응답은 `200`번 대 Status Code를 사용하는데,
+
+    - 성공적으로 삭제할 것 같으나 아직 실행하지 않은 경우 `202(Accepted)`를 전송한다.
+    - 응답이 유의미한 데이터를 포함하지 않는다면 `204(No Content)`를 전송한다.
+    - 응답이 유의미한 데이터를 포함한다면 삭제 이후의 데이터를 출력하며 `200(OK)`를 전송한다.
+ 
+  - DELETE 메서드의 경우 주로 Path Parameter를 사용해 해당 데이터를 삭제한다. 
+
+- Path Parameter를 받아 해당 데이터를 삭제하는 `delete` 메서드를 작성해보자.
+
+  ```js
+  app.delete('/note/:noteId', (req, res) => {
+    const noteId = Number(req.params.noteId);
+    const index = data.findIndex((item) => item.id === noteId);
+    // 찾는 데이터가 없다면 404 응답
+    if (index === -1) res.sendStatus(404);
+  
+    // data 배열에서 데이터를 삭제하고 삭제한 배열을 반환
+    const deletedItem = data.splice(index, 1)[0];
+    console.log(deletedItem);
+  
+    res.sendStatus(204);
+  });
+  ```
+
+  - Path Parameter에 입력한 `noteId` 값을 입력 후 DELETE 요청을 보내면 해당 데이터가 삭제되는 것을 확인할 수 있다.
+
+    |**DELETE 요청**|**GET 요청**|
+    |:---:|:---:|
+    |<img alt="image" src="https://github.com/user-attachments/assets/d2bb8bc8-354a-4252-8e17-fe0662ea0802" />|<img alt="image" src="https://github.com/user-attachments/assets/c161b5df-4b07-4b7d-a1cb-6696c51419f0" />|
+
+  - 이미 삭제된 데이터에 대해 다시 DELETE 요청을 보내면 `404 Not Found` 응답을 전송한다.
+  
+    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/ee3d0787-e9a5-44e3-9699-12f1f78c3cc2" />
+
+  - 개발하다보면 삭제된 데이터도 필요한 경우가 있다. 이럴 때는 삭제된 데이터도 `response`에 담아서 `200` Status Code와 함께 전송할 수 있다.
+
+    ```js
+    app.delete('/note/:noteId', (req, res) => {
+      const noteId = Number(req.params.noteId);
+      const index = data.findIndex((item) => item.id === noteId);
+      // 찾는 데이터가 없다면 404 응답
+      if (index === -1) res.sendStatus(404);
     
+      // data 배열에서 데이터를 삭제하고 삭제한 배열을 반환
+      const deletedItem = data.splice(index, 1)[0];
+      console.log(deletedItem);
+    
+      res.status(200).json({
+        message: 'Deleted Successfully!',
+        deletedItem,
+      });
+    });
+    ```
+    
+    - DELETE 호출 시 다음과 같이 삭제된 데이터도 `deletedItem`의 Value에 담아 보내주는 것을 확인할 수 있다.
+      
+      <img width="50%" alt="image" src="https://github.com/user-attachments/assets/dcfd8d72-0257-4b23-8e2d-10d0dfd3e213" />
+
 <br />
 
 ## :book: 참고
