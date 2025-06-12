@@ -73,3 +73,19 @@ app.get('/note', (req, res) => {
 	const item = data.filter((item) => item.id === Number(id));
 	res.send(item);
 });
+
+// PUT
+app.put('/note', (req, res) => {
+	const { id, note, name } = req.body;
+
+	if (!id) res.sendStatus(400);
+	if (!note) res.sendStatus(400);
+	if (!name) res.sendStatus(400);
+
+	// 1. Array.findIndex를 이용해 같은 id 값을 찾는다.
+	const index = data.findIndex((item) => item.id === id);
+	// 2. 찾은 id 값을 이용해 원하는 데이터를 변경한다.
+	data[index].note = note;
+	console.log(data);
+	res.sendStatus(204);
+});
