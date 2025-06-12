@@ -89,3 +89,20 @@ app.put('/note', (req, res) => {
 	console.log(data);
 	res.sendStatus(204);
 });
+
+// DELETE
+app.delete('/note/:noteId', (req, res) => {
+	const noteId = Number(req.params.noteId);
+	const index = data.findIndex((item) => item.id === noteId);
+	// 찾는 데이터가 없다면 404 응답
+	if (index === -1) res.sendStatus(404);
+
+	// data 배열에서 데이터를 삭제하고 삭제한 배열을 반환
+	const deletedItem = data.splice(index, 1)[0];
+	console.log(deletedItem);
+
+	res.status(200).json({
+		message: 'Deleted Successfully!',
+		deletedItem,
+	});
+});
