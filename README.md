@@ -6,6 +6,7 @@
 
 1. [Express 설정](#one-express-설정)
 2. [Express 기본](#two-express-기본)
+3. [AWS 계정 보안 설정](#three-aws-계정-보안-설정)
 
 [참고](#book-참고)
 
@@ -544,6 +545,11 @@
     - DELETE 호출 시 다음과 같이 삭제된 데이터도 `deletedItem`의 Value에 담아 보내주는 것을 확인할 수 있다.
       
       <img width="50%" alt="image" src="https://github.com/user-attachments/assets/dcfd8d72-0257-4b23-8e2d-10d0dfd3e213" />
+
+<br />
+
+## :three: AWS 계정 보안 설정
+
 
 <br />
 
