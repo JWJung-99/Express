@@ -550,9 +550,19 @@
 
 ## :three: AWS 계정 보안 설정
 
+AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억이 청구된 사례가 많은 만큼 항상 보안에 철저하게 주의해야 한다.
+
+### 루트 계정 보안 강화
+
+- 루트 계정은 AWS에 가입할 때 처음 생성되는 계정으로 모든 AWS 서비스 및 리소스에 대한 액세스 권한을 가진다. 루트 계정에 액세스할 수 있는 사용자가 있으면 AWS 리소스는 물론 비즈니스에도 상당한 피해를 줄 수 있으므로 루트 계정을 보호하는 것이 중요하다.
+
+- **MFA 계정 생성**
+
+  - MFA(Multi-Factor Authentication)는 AWS 계정에 보안 계층을 추가한다. MFA가 활성화된 경우 계정에 액세스하려면 암호 외에 고유한 코드를 제공해야 한다.
 
 <br />
 
 ## :book: 참고
 
 - [Express.js 공식문서](https://expressjs.com/)
+- [MFA 인증](https://aws.amazon.com/ko/blogs/tech/all-for-mfa-in-aws-environment/)
