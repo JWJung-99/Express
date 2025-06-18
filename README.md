@@ -580,13 +580,13 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
   - EC2만 생성한다면 EC2 서버에 접속하기 위해 AWS 콘솔을 이용해야만 할 것이다.
   - Public(외부)에서 EC2에 접속할 수 있도록 하기 위해 VPC를 사용하고, 같은 VPC 내에 RDS도 구축하여 EC2와 RDS 간의 통신이 가능하도록 할 수 있다.
 
-  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/897017b0-4634-47b1-9053-22cd03eb22ca" />
+  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/b467d4cb-bcd2-4ac2-a704-9fba61b5db44" />
 
 - VPC 생성
 
   - AWS 콘솔에서 VPC 메뉴로 접속한 후 VPC를 생성한다. `vpc-ec2-rds`라는 이름의 VPC를 생성해보자. 다른 설정은 기본값으로 설정한다.
 
-    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/db0ea368-fa37-40bd-9a59-c6f2c892ada5" />
+    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/f528bc33-fbd4-42d8-bace-8934429559de" />
 
   - 만약 VPC가 EC2나 RDS와 연결된 상태라면 삭제가 불가능하다.
 
@@ -598,16 +598,16 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
 - AWS 콘솔에서 EC2 메뉴로 접속하여 EC2를 생성한다.
 
-  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/42757d6f-4ce2-4fd6-afe4-532b020c9da0" />
+  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/0b7e59cb-38be-48eb-815c-cc3e4e6e039f" />
 
   - ubuntu 24.04 버전을 사용하며 인스턴스는 t2.micro 유형으로 생성한다.
   - 키 페어는 RSA 유형의 `.pem` 형식으로 생성한다.
 
-    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/9f228e93-eebc-4aea-beed-580e34905781" />
+    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/5b3842e6-3e1c-4679-aadb-43751b78a506" />
 
   - 네트워크 설정에서 위에서 생성한 VPC를 선택하고, Public Subnet을 설정한 후 퍼블릭 IP 자동 할당을 활성화한다.
-
-    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/6759a4ed-ad02-452c-8338-74ef196e9e2e" />
+		
+	  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/29ccc613-6659-4642-9503-02667c676faa" />
 
   - 나머지 설정은 기본값으로 설정한다.
 
@@ -617,7 +617,7 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
 - AWS 콘솔의 **EC2 인스턴스 연결** 탭을 이용해 인스턴스에 접속한다.
 
-  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/6007e433-c1fc-4a8b-ae87-257928bc104d" />
+  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/b83c44e6-d62a-45b0-84e6-1c527783bcd6" />
 
 - `apt update`를 먼저 진행한다.
 
@@ -631,7 +631,7 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
   sudo apt install curl
   ```
 
-- `nvm`(노드 버전 관리자)을 설치한다. \*\*참고: [Node.js 공식문서](https://nodejs.org/en/download)
+- `nvm`(노드 버전 관리자)을 설치한다. **참고: [Node.js 공식문서](https://nodejs.org/en/download)**
 
   ```bash
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
@@ -668,7 +668,7 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
 - 다음과 같이 test 폴더 내부에 잘 설치가 된 것을 확인할 수 있다.
 
-  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/359293b8-401e-4f2a-a172-6b53515325f2" />
+  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/7fbdc652-18f2-46b0-b72e-c450c63a1f98" />
 
 - 이제 test 폴더 내부로 이동해 기본적인 npm 패키지들을 설치한다.
 
@@ -679,15 +679,15 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
 - 이제 서버에 접속하기 위해 포트를 열어주어야 한다. EC2의 Security 탭에서 인바운드 규칙의 보안 그룹을 선택한 후 인바운드 규칙을 수정해야 한다.
 
-  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/e58bcc3d-7ecb-4c51-b5d5-6aff91f2a7ff" />
+  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/bc06e178-75d4-4941-987c-a526df525f49" />
 
 - 서버를 실행하고 EC2의 퍼블릭 주소로 이동한 후 기본 설정된 `3000`번 포트로 이동하면 다음과 같이 잘 접속되는 것을 확인할 수 있다.
 
   ```bash
   npm start
   ```
-
-  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/b3717f3f-f15f-4295-95d5-c5c38ad027ab" />
+  
+  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/b341f41f-46e2-4565-816e-ddeccc13846b" />
 
 <br />
 
@@ -705,11 +705,11 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
 - AWS 콘솔의 RDS 탭으로 이동하여 서브넷 그룹을 생성한다.
 
-  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/89a40660-18fc-415c-9d54-e2740925a047" />
+  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/8d740966-04db-4579-80f1-f0cef069ed95" />
 
 - VPC의 퍼블릭 서브넷 두 개를 RDS의 서브넷 그룹에 추가한다.
 
-  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/22cb920d-0355-4d4a-adf8-0fef1ceafa6c" />
+  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/0ace8c16-94a9-4d17-b8ca-54c5fb6c66dc" />
 
 <br />
 
@@ -722,11 +722,11 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
   - 데이터베이스 이름을 지정하지 않으면 데이터베이스를 생성하지 않는다고 하니 이름을 지정한다.
   - 나머지는 기본 설정을 유지한다.
 
-  |                                               **엔진 옵션**                                               |                                                **템플릿**                                                 |
-  | :-------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------: |
-  | <img alt="image" src="https://github.com/user-attachments/assets/c49922bb-7da8-46af-81f5-6decdd162f36" /> | <img alt="image" src="https://github.com/user-attachments/assets/e73057ff-e98e-4efd-a289-7a3fcc880be8" /> |
-  |                                           **퍼블릭 연결 설정**                                            |                                               **추가 구성**                                               |
-  | <img alt="image" src="https://github.com/user-attachments/assets/9265d5cb-7a4a-4add-898c-bf32afc7da01" /> | <img alt="image" src="https://github.com/user-attachments/assets/1f008f36-daf9-41dd-b084-4020eafaa59e" /> |
+  |**엔진 옵션**|**템플릿**|
+  |:---:|:---:|
+  |<img alt="image" src="https://github.com/user-attachments/assets/4ccb9d1c-8b57-4e51-8de5-d569206b507b" />|<img alt="image" src="https://github.com/user-attachments/assets/e7f78423-40bd-4600-a319-e3a55ea6164f" />|
+  |**퍼블릭 연결 설정**|**추가 구성**|
+  |<img alt="image" src="https://github.com/user-attachments/assets/54939cb2-76c0-4a2f-a8cf-ba27751a7b63" />|<img alt="image" src="https://github.com/user-attachments/assets/cec8fcee-988a-4624-96e3-f10a5ad064ce" />|
 
 <br />
 
@@ -734,7 +734,7 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
 - 데이터베이스를 생성했지만 접속이 불가하다면 VPC의 보안 그룹으로 이동하여 인바운드 규칙을 **모든 트래픽**, **Anywhere-IPv4**로 설정해야 한다.
 
-  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/2e62bd14-e0b6-418f-968e-e38f8aca66ec" />
+ 	<img width="50%" alt="image" src="https://github.com/user-attachments/assets/6a164ae6-68da-4f4b-a15e-7f8f80b6b282" />
 
 <br />
 
@@ -768,7 +768,7 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
     <br />
 
-    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/cc415ab4-d054-437c-ae2d-b7fa363ada23" />
+    <img width="40%" alt="image" src="https://github.com/user-attachments/assets/0c477585-f3fb-44b3-889d-cee922e15462" />
 
 <br />
 
@@ -782,35 +782,33 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
   ```js
   pool.query(`SHOW DATABASES`, function (err, rows, fields) {
-  	// Connection is automatically released when query resolves
-  	console.log(rows);
+    // Connection is automatically released when query resolves
+    console.log(rows);
   });
   ```
 
   - 데이터베이스에 접속에 성공한다면 다음과 같이 설정한 AWS 콘솔에서 추가한 `db_notes`가 뜨는 것을 확인할 수 있다.
-
-    <img width="30%" alt="image" src="https://github.com/user-attachments/assets/44099b3f-3295-4d10-a099-126ce78d4d03" />
+		
+	  <img width="30%" alt="image" src="https://github.com/user-attachments/assets/cbb64c4e-f630-43d1-bd59-d44497172a05" />
 
 - 다음과 같이 `db_test`라는 이름으로 데이터베이스를 생성할 수도 있다.
 
   ```js
   pool.query(`CREATE DATABASE db_test`, function (err, rows, fields) {
-  	// Connection is automatically released when query resolves
-  	console.log(rows);
+    // Connection is automatically released when query resolves
+    console.log(rows);
   });
   ```
-
-  <img width="30%" alt="image" src="https://github.com/user-attachments/assets/614d9a17-411e-4ccd-bf7c-88549d52f4d1" />
 
 - `createPool` 내부에서 `database` 값을 지정하면 해당 데이터베이스를 사용할 수 있다.
 
   ```js
   const pool = mysql.createPool({
-  	host: process.env.MYSQL_RDS_ENDPOINT,
-  	user: process.env.MYSQL_RDS_USERNAME,
-  	password: process.env.MYSQL_RDS_PASSWORD,
-  	port: 3306,
-  	database: 'db_test',
+    host: process.env.MYSQL_RDS_ENDPOINT,
+    user: process.env.MYSQL_RDS_USERNAME,
+    password: process.env.MYSQL_RDS_PASSWORD,
+    port: 3306,
+    database: 'db_test',
   });
   ```
 
@@ -822,48 +820,48 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
   ```js
   pool.query(
-  	`CREATE TABLE notes (
+    `CREATE TABLE notes (
     uuid BINARY(16) DEFAULT (UUID_TO_BIN(UUID(),1)) PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     contents TEXT NOT NULL,
     created TIMESTAMP NOT NULL DEFAULT NOW()
   );`,
-  	function (err, rows, fields) {
-  		// Connection is automatically released when query resolves
-  		console.log(rows);
-  	}
+    function (err, rows, fields) {
+      // Connection is automatically released when query resolves
+      console.log(rows);
+    }
   );
 
   pool.query(`SHOW TABLES`, function (err, rows, fields) {
-  	console.log(rows);
+    console.log(rows);
   });
   ```
 
   - 다음과 같이 테이블이 잘 생성된 것을 확인할 수 있다.
 
-    <img width="30%" alt="image" src="https://github.com/user-attachments/assets/087cb142-6515-4c5a-9157-65aca7231d69" />
+    <img width="30%" alt="image" src="https://github.com/user-attachments/assets/6efb50fd-bfc3-4fa6-83b9-58a2bd7bddb2" />
 
 - 다음으로 테이블에 데이터를 추가해보자. 다음과 같은 쿼리문을 활용하여 `notes` 테이블에 두 개의 데이터를 저장한다.
 
   ```js
   pool.query(
-  	`INSERT INTO notes (title, contents)
+    `INSERT INTO notes (title, contents)
     VALUES 
     ('My First Note', 'A note about something'),
     ('My Second Note', 'A note about something else');`,
-  	function (err, rows, fields) {
-  		console.log(rows);
-  	}
+    function (err, rows, fields) {
+      console.log(rows);
+    }
   );
 
   pool.query(`SELECT * FROM notes`, function (err, rows, fields) {
-  	console.log(rows);
+    console.log(rows);
   });
   ```
 
   - 다음과 같이 데이터가 잘 생성된 것을 확인할 수 있다.
 
-    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/1a949ad5-9e06-4556-bf17-b9ed345cbc7a" />
+    <img width="40%" alt="image" src="https://github.com/user-attachments/assets/a60c5636-405f-46f5-a499-54bf8a915dc3" />
 
 <br />
 
