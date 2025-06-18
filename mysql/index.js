@@ -10,6 +10,16 @@ const pool = mysql.createPool({
 	database: 'db_test',
 });
 
-pool.query(`SELECT * FROM notes`, function (err, rows, fields) {
-	console.log(rows);
-});
+/**
+ * SELECT 함수
+ */
+function getNotes() {
+	pool.query(
+		`SELECT BIN_TO_UUID(uuid, true) AS uuid, title, contents, created FROM notes`,
+		function (err, rows, fields) {
+			console.log(rows);
+		}
+	);
+}
+
+getNotes();
