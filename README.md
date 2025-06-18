@@ -1,4 +1,4 @@
-<img width="1249" alt="image" src="https://github.com/user-attachments/assets/1c1d81a2-6c3d-4d9e-a7f0-6d756454276e" /># Express
+# Express
 
 <br />
 
