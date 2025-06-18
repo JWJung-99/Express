@@ -1,4 +1,4 @@
-# Express
+<img width="1249" alt="image" src="https://github.com/user-attachments/assets/1c1d81a2-6c3d-4d9e-a7f0-6d756454276e" /># Express
 
 <br />
 
@@ -41,11 +41,11 @@
    const port = 3000;
 
    app.get('/', (req, res) => {
-   	res.send('Hello World!');
+     res.send('Hello World!');
    });
 
    app.listen(port, () => {
-   	console.log(`Example app listening on port ${port}`);
+     console.log(`Example app listening on port ${port}`);
    });
    ```
 
@@ -111,27 +111,27 @@
 
     ```js
     app.get('/test', (req, res) => {
-    	res.send('Hello Test!');
+      res.send('Hello Test!');
     });
     ```
 
     - 위 코드는 **`/test` 주소로 `GET` 요청을 보냈을 때 "Hello Test!"라는 응답을 받는다**는 의미이다.
     - 실제로 브라우저에서 `http://localhost:3000/test`로 이동해보면 아래와 같은 결과를 확인할 수 있다.
 
-      <img width="50%" alt="image" src="https://github.com/user-attachments/assets/2ddb1f91-62e6-430c-9781-ce13ac5ad613" />
+      <img width="50%" alt="image" src="https://github.com/user-attachments/assets/472337ad-135a-4474-bede-6a9fe5a5e044" />
 
   - `POST` 요청도 작성해보자.
 
     ```js
     app.post('/test', (req, res) => {
-    	res.send('Got a POST request');
+      res.send('Got a POST request');
     });
     ```
 
     - 위 코드는 **`/test` 주소로 `POST` 요청을 보냈을 때 "Got a POST request"라는 응답을 받는다**는 의미이다.
     - `POST` 요청의 경우 브라우저에서 `request`를 보내기 어렵기 때문에 POSTMAN을 이용해 확인할 수 있다.
-
-      <img width="50%" alt="image" src="https://github.com/user-attachments/assets/a247839a-6fff-4b74-a4e8-1b3935f5f508" />
+   
+      <img width="50%" alt="image" src="https://github.com/user-attachments/assets/8493cefa-8fb9-46ad-b482-19e29fdd5746" />
 
   - `PUT`, `DELETE` 요청도 같은 방법으로 작성할 수 있다.
 
@@ -145,7 +145,7 @@
 
   ```js
   app.get('/', (request, response) => {
-  	response.send('Hello World!');
+    response.send('Hello World!');
   });
   ```
 
@@ -156,19 +156,19 @@
 
   ```js
   const data = [
-  	{ id: 1, name: 'name-1', note: 'note-1' },
-  	{ id: 2, name: 'name-2', note: 'note-2' },
-  	{ id: 3, name: 'name-3', note: 'note-3' },
+    { id: 1, name: 'name-1', note: 'note-1' },
+    { id: 2, name: 'name-2', note: 'note-2' },
+    { id: 3, name: 'name-3', note: 'note-3' },
   ];
 
   app.get('/notes', (req, res) => {
-  	res.send(data);
+    res.send(data);
   });
   ```
 
   - 브라우저에서 `http://localhost:3000/notes`로 이동해보면 `data`를 확인할 수 있다.
 
-    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/d1f62d13-b490-4478-9e25-033482e9f566" />
+    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/19ea762c-0bd4-4119-939c-a52e641894c8" />
 
 - 이처럼 `get` 메서드는 CRUD 중 **READ**를 위해 사용하는 HTTP 메서드이다.
 
@@ -181,7 +181,7 @@
 
   ```js
   app.post('/notes', (req, res) => {
-  	res.sendStatus(201);
+    res.sendStatus(201);
   });
   ```
 
@@ -189,13 +189,15 @@
   - GET 요청 이후 "성공적으로 리소스를 불러와서 메시지 바디에 전송됨"을 알리기 위해 `200`번 Status Code를 전송한다.
   - 각 요청이 성공한 후 다음과 같이 Status Code와 응답을 보내주는 것을 확인할 수 있다.
 
-    |                                         **GET 요청에 대한 응답**                                          |                                         **POST 요청에 대한 응답**                                         |
-    | :-------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------: |
-    | <img alt="image" src="https://github.com/user-attachments/assets/1e39307f-75b4-4c72-bacf-1013466c56e0" /> | <img alt="image" src="https://github.com/user-attachments/assets/6a47f9ac-2ba1-4966-affe-b2a11a06703c" /> |
+    |**GET 요청에 대한 응답**|**POST 요청에 대한 응답**|
+    |:---:|:---:|
+    |<img alt="image" src="https://github.com/user-attachments/assets/a2c63794-1d59-461d-ba96-2e52fe063062" />|<img alt="image" src="https://github.com/user-attachments/assets/d2cfbf4a-841f-466c-ab33-50b0c18557bf" />|
 
-<br />
+	<br />
 
-> [!IMPORTANT] > **[공식문서 - HTTP Response Status Code](https://developer.mozilla.org/ko/docs/Web/HTTP/Reference/Status)**
+> [!IMPORTANT]
+>
+> **[공식문서 - HTTP Response Status Code](https://developer.mozilla.org/ko/docs/Web/HTTP/Reference/Status)**
 
 <br />
 
@@ -205,16 +207,16 @@
 
     ```js
     app.post('/notes', (req, res) => {
-    	console.log(req.body);
-    	res.sendStatus(201);
+      console.log(req.body);
+      res.sendStatus(201);
     });
     ```
 
   - POSTMAN에서 `body`에 새로운 데이터를 담아 POST 요청을 보내면, `201` Status Code와 함께 `log`가 생성되는 것을 확인할 수 있다.
 
-    |                                               **POST 요청**                                               |                                        **POST 요청에 대한 `log`**                                         |
-    | :-------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------: |
-    | <img alt="image" src="https://github.com/user-attachments/assets/8709b30c-d234-42e8-9940-c045e89a0981" /> | <img alt="image" src="https://github.com/user-attachments/assets/3ad7db65-90a3-43ed-8905-05e7cc80ab16" /> |
+    |**POST 요청**|**POST 요청에 대한 `log`**|
+    |:---:|:---|
+    |<img width="500" alt="image" src="https://github.com/user-attachments/assets/f4534f39-bc33-442b-912d-bece803d5506" />|<img width="300" alt="image" src="https://github.com/user-attachments/assets/925a086b-e8c4-48f8-8440-82e49f870ce6" />|
 
   - 하지만 아직은 전송한 `body`의 내용이 아니라 `undefined`가 뜨는 상황이다.
 
@@ -226,7 +228,7 @@
 
     - 미들웨어를 사용하고 다시 한 번 POST 요청을 보내면 결과값을 잘 확인할 수 있다.
 
-      <img width="30%" alt="image" src="https://github.com/user-attachments/assets/1e4c51ca-fa8c-4460-8b2b-665d706a7106" />
+  		<img width="30%" alt="image" src="https://github.com/user-attachments/assets/b2526e80-f65a-4231-95e2-9dd11f481a18" />
 
 <br />
 
@@ -234,15 +236,15 @@
 
   ```js
   app.post('/notes', (req, res) => {
-  	console.log(req.body);
-  	data.push(req.body);
-  	res.sendStatus(201);
+    console.log(req.body);
+    data.push(req.body);
+    res.sendStatus(201);
   });
   ```
 
   - 다시 한 번 GET 요청을 보내보면, 기존 `data` 배열에 새로운 객체가 추가된 것을 확인할 수 있다.
 
-    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/c0dbff46-a154-4539-a5cf-1ce52343c9d5" />
+    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/12a7e91e-ac31-4e70-84d2-96f117766162" />
 
 <br />
 
@@ -262,19 +264,19 @@
 
   ```js
   app.get(
-  	'/notes',
-  	(req, res) => {
-  		console.log('Middleware test');
-  	},
-  	(req, res) => {
-  		res.send(data);
-  	}
+    '/notes',
+    (req, res) => {
+      console.log('Middleware test');
+    },
+    (req, res) => {
+      res.send(data);
+    }
   );
   ```
 
 - `http://localhost:3000/notes`로 이동해보면 아래 사진처럼 계속해서 로딩이 발생하는 것을 확인할 수 있다.
 
-  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/9ec4f400-62f7-4c83-b8d5-4f11cc353c66" />
+  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/2c22de3c-c399-49c0-b063-854d65c5c862" />
 
   - 코드의 미들웨어를 테스트하는 부분에서 다음 콜백 함수로 넘어가지 않고 대기 중이기 때문이다!
 
@@ -282,14 +284,14 @@
 
   ```js
   app.get(
-  	'/notes',
-  	(req, res, next) => {
-  		console.log('Middleware test');
-  		next();
-  	},
-  	(req, res) => {
-  		res.send(data);
-  	}
+    '/notes',
+    (req, res, next) => {
+      console.log('Middleware test');
+      next();
+    },
+    (req, res) => {
+      res.send(data);
+    }
   );
   ```
 
@@ -297,8 +299,8 @@
 
   ```js
   app.use((req, res, next) => {
-  	console.log('Middleware test 0');
-  	next();
+    console.log('Middleware test 0');
+    next();
   });
   ```
 
@@ -312,7 +314,7 @@
 
     ```js
     app.get('/ab?cd', (req, res) => {
-    	res.send('ab?cd');
+      res.send('ab?cd');
     });
     ```
 
@@ -320,7 +322,7 @@
 
     ```js
     app.get('/ab+cd', (req, res) => {
-    	res.send('ab+cd');
+      res.send('ab+cd');
     });
     ```
 
@@ -328,7 +330,7 @@
 
     ```js
     app.get('/ab*cd', (req, res) => {
-    	res.send('ab*cd');
+      res.send('ab*cd');
     });
     ```
 
@@ -366,14 +368,14 @@
 
     ```js
     app.get('/note/:noteId', (req, res) => {
-    	console.log(req.params);
-    	res.sendStatus(200);
+      console.log(req.params);
+      res.sendStatus(200);
     });
     ```
 
     - `http://localhost:3000/note/1`로 이동해보면 다음과 같이 `log`에 `req.params`가 담기는 것을 확인할 수 있다.
 
-      <img width="30%" alt="image" src="https://github.com/user-attachments/assets/7732e198-d83c-4ed2-9d0f-8fe6de6c0405" />
+      <img width="30%" alt="image" src="https://github.com/user-attachments/assets/3764ed33-f070-4d67-b538-51dfd278b70f" />
 
   - 해당 `noteId`를 이용해 데이터를 불러오는 코드로 확장할 수 있다.
 
@@ -381,17 +383,15 @@
 
       ```js
       app.get('/note/:noteId', (req, res) => {
-      	console.log(req.params);
-      	const item = data.filter(
-      		(item) => item.id === Number(req.params.noteId)
-      	);
-      	res.send(item);
-      });
+		  console.log(req.params);
+		  const item = data.find((item) => item.id === Number(req.params.noteId));
+		  res.send(item);
+		});
       ```
 
     - `http://localhost:3000/note/1`로 이동해보면 다음과 같이 1번 데이터 응답이 잘 도착한 것을 확인할 수 있다.
 
-      <img width="50%" alt="image" src="https://github.com/user-attachments/assets/9b6952a4-2d8b-4a9a-818e-f5e97b375d03" />
+		<img width="50%" alt="image" src="https://github.com/user-attachments/assets/a1546cf9-9435-4cba-8e49-6e2af23d1e62" />
 
 <br />
 
@@ -414,35 +414,33 @@ ex) https://trifly.vercel.app/ticket-result?originLocationCode=ICN&destinationLo
 
   ```js
   app.get('/note', (req, res) => {
-  	console.log(req.query);
-  	res.send('OK Query');
+    console.log(req.query);
+    res.send('OK Query');
   });
   ```
 
   - 브라우저에서 `http://localhost:3000/note?id=1&name=name-1`로 이동하면 `log`에서 다음과 같이 query parameter를 잘 받아오는 것을 확인할 수 있다.
 
-    |                                               **GET 요청**                                                |                                         **Query Parameter 확인**                                          |
-    | :-------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------: |
-    | <img alt="image" src="https://github.com/user-attachments/assets/1ccddea1-ddf8-4118-8d27-76e92d06d8f3" /> | <img alt="image" src="https://github.com/user-attachments/assets/ab0f8d7d-7ac3-4739-942a-269e3ba9042e" /> |
+    |**GET 요청** |**Query Parameter 확인**|
+    |:---:|:---:|
+    |<img width="500" alt="image" src="https://github.com/user-attachments/assets/18405bd6-9966-44e2-992c-5979d3c778bd" />|<img width="300" alt="image" src="https://github.com/user-attachments/assets/5e626bec-4a00-4eba-903a-64086f2c82b9" />|
 
   - 이어서 Query Parameter를 이용해 원하는 데이터만 받아올 수 있도록 코드를 수정한다.
 
     ```js
     app.get('/note', (req, res) => {
-    	console.log(req.query);
-    	const { id } = req.query;
+      console.log(req.query);
+      const { id } = req.query;
 
-    	// id 값이 없다면 응답으로 빈 배열을 전송한다.
-    	if (!id) res.send([]);
-
-    	const item = data.filter((item) => item.id === Number(id));
-    	res.send(item);
+      if (!id) res.send({});
+      const item = data.filter((item) => item.id === Number(id));
+      res.send(item);
     });
     ```
 
     - 브라우저에서 `http://localhost:3000/note?id=1`로 이동하면 다음과 같이 `id`가 `1`인 데이터만 잘 불러오는 것을 확인할 수 있다.
 
-      <img width="50%" alt="image" src="https://github.com/user-attachments/assets/6366f9eb-7983-4321-8c2a-1f8218e6d49e" />
+      <img width="50%" alt="image" src="https://github.com/user-attachments/assets/2ab3cc21-c344-400a-ac24-01a3e720cb39" />
 
 <br />
 
@@ -468,27 +466,27 @@ ex) https://trifly.vercel.app/ticket-result?originLocationCode=ICN&destinationLo
 
   ```js
   app.put('/note', (req, res) => {
-  	const { id, note, name } = req.body;
+    const { id, note, name } = req.body;
 
-  	if (!id) res.sendStatus(400);
-  	if (!note) res.sendStatus(400);
-  	if (!name) res.sendStatus(400);
+    if (!id) res.sendStatus(400);
+    if (!note) res.sendStatus(400);
+    if (!name) res.sendStatus(400);
 
-  	// 1. Array.findIndex를 이용해 같은 id 값을 찾는다.
-  	const index = data.findIndex((item) => item.id === id);
+    // 1. Array.findIndex를 이용해 같은 id 값을 찾는다.
+    const index = data.findIndex((item) => item.id === id);
 
-  	// 2. 찾은 id 값을 이용해 원하는 데이터를 변경한다.
-  	data[index].note = note;
-  	console.log(data);
-  	res.sendStatus(204);
+    // 2. 찾은 id 값을 이용해 원하는 데이터를 변경한다.
+    data[index].note = note;
+    console.log(data);
+    res.sendStatus(204);
   });
   ```
 
   - `id`가 `2`인 데이터의 `note` 값을 업데이트 후 PUT 요청을 보내면 다음과 같이 데이터가 업데이트 되는 것을 확인할 수 있다.
 
-    |                                               **PUT 요청**                                                |                                               **GET 요청**                                                |
-    | :-------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------: |
-    | <img alt="image" src="https://github.com/user-attachments/assets/593b529a-c97d-431c-a9b7-adb2c59118f4" /> | <img alt="image" src="https://github.com/user-attachments/assets/02d6eac2-e4f5-4380-82be-4cb5b53550fc" /> |
+    |**PUT 요청**|**GET 요청**|
+    |:---:|:---:|
+    |<img width="1249" alt="image" src="https://github.com/user-attachments/assets/b85aad87-b229-4766-80ea-268314b93832" />|<img width="50%" alt="image" src="https://github.com/user-attachments/assets/c98b5e93-76de-40f8-9d32-8a21df196ed1" />|
 
 <br />
 
@@ -508,52 +506,54 @@ ex) https://trifly.vercel.app/ticket-result?originLocationCode=ICN&destinationLo
 
   ```js
   app.delete('/note/:noteId', (req, res) => {
-  	const noteId = Number(req.params.noteId);
-  	const index = data.findIndex((item) => item.id === noteId);
-  	// 찾는 데이터가 없다면 404 응답
-  	if (index === -1) res.sendStatus(404);
+    const noteId = Number(req.params.noteId);
+    const index = data.findIndex((item) => item.id === noteId);
 
-  	// data 배열에서 데이터를 삭제하고 삭제한 배열을 반환
-  	const deletedItem = data.splice(index, 1)[0];
-  	console.log(deletedItem);
+    // 찾는 데이터가 없다면 404 응답
+    if (index === -1) res.sendStatus(404);
 
-  	res.sendStatus(204);
+    // data 배열에서 데이터를 삭제하고 삭제한 배열을 반환
+    const deletedItem = data.splice(index, 1)[0];
+    console.log(deletedItem);
+
+    res.sendStatus(204);
   });
   ```
 
   - Path Parameter에 입력한 `noteId` 값을 입력 후 DELETE 요청을 보내면 해당 데이터가 삭제되는 것을 확인할 수 있다.
 
-    |                                              **DELETE 요청**                                              |                                               **GET 요청**                                                |
-    | :-------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------: |
-    | <img alt="image" src="https://github.com/user-attachments/assets/d2bb8bc8-354a-4252-8e17-fe0662ea0802" /> | <img alt="image" src="https://github.com/user-attachments/assets/c161b5df-4b07-4b7d-a1cb-6696c51419f0" /> |
+    |**DELETE 요청**|**GET 요청**|
+    |:---:|:---:|
+    |<img alt="image" src="https://github.com/user-attachments/assets/a001ae1b-8300-41f9-bded-188c00b72572" />|<img alt="image" src="https://github.com/user-attachments/assets/20c57b82-c2b5-4956-8d4d-9c17df6bd5a2" />|
 
   - 이미 삭제된 데이터에 대해 다시 DELETE 요청을 보내면 `404 Not Found` 응답을 전송한다.
-
-    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/ee3d0787-e9a5-44e3-9699-12f1f78c3cc2" />
+ 
+    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/06449afc-1ff1-412a-a29f-ad0e2cf22235" />
 
   - 개발하다보면 삭제된 데이터도 필요한 경우가 있다. 이럴 때는 삭제된 데이터도 `response`에 담아서 `200` Status Code와 함께 전송할 수 있다.
 
     ```js
     app.delete('/note/:noteId', (req, res) => {
-    	const noteId = Number(req.params.noteId);
-    	const index = data.findIndex((item) => item.id === noteId);
-    	// 찾는 데이터가 없다면 404 응답
-    	if (index === -1) res.sendStatus(404);
+      const noteId = Number(req.params.noteId);
+      const index = data.findIndex((item) => item.id === noteId);
 
-    	// data 배열에서 데이터를 삭제하고 삭제한 배열을 반환
-    	const deletedItem = data.splice(index, 1)[0];
-    	console.log(deletedItem);
+      // 찾는 데이터가 없다면 404 응답
+      if (index === -1) res.sendStatus(404);
 
-    	res.status(200).json({
-    		message: 'Deleted Successfully!',
-    		deletedItem,
-    	});
+      // data 배열에서 데이터를 삭제하고 삭제한 배열을 반환
+      const deletedItem = data.splice(index, 1)[0];
+      console.log(deletedItem);
+
+      res.status(200).json({
+        message: 'Deleted Successfully!',
+        deletedItem,
+      });
     });
     ```
 
     - DELETE 호출 시 다음과 같이 삭제된 데이터도 `deletedItem`의 Value에 담아 보내주는 것을 확인할 수 있다.
 
-      <img width="50%" alt="image" src="https://github.com/user-attachments/assets/dcfd8d72-0257-4b23-8e2d-10d0dfd3e213" />
+      <img width="50%" alt="image" src="https://github.com/user-attachments/assets/7a2cbce1-a1dd-4df9-811c-373110ce2dc0" />
 
 <br />
 
