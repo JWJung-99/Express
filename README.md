@@ -11,6 +11,7 @@
 5. [AWS EC2](#five-aws-ec2)
 6. [AWS RDS 설정](#six-aws-rds-설정)
 7. [AWS RDS MySQL 연결](#seven-aws-rds-mysql-연결)
+8. [MySQL 함수](#eight-mysql-함수)
 
 [참고](#book-참고)
 
@@ -875,6 +876,46 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
   - Primary Key가 다른 테이블과 중복될 가능성이 높다.
 
 - UUID는 36바이트를 사용하기 때문에 속도도 느리고 메모리 사용도 커서 비효율적이라서 UUID를 16바이트 정도로 줄여 이 문제를 해결할 수 있을 것이다.
+
+<br />
+
+## :eight: MySQL 함수
+
+### SELECT 함수
+
+- 데이터베이스의 테이블에서 데이터를 가져오기 위한 함수를 작성한다.  
+
+   - UUID의 경우 Buffer를 이용해서 가져오기 때문에 `BIN_TO_UUID(uuid, true)` 메서드를 이용해 변경해주어야 한다.
+
+   <br />
+   
+   ```js
+   function getNotes() {
+     pool.query(
+       `SELECT BIN_TO_UUID(uuid, true) AS uuid, title, contents, created FROM notes`,
+       function (err, rows, fields) {
+         console.log(rows);
+       }
+     );
+   }
+   
+   getNotes();
+   ```
+
+   - 함수 실행 결과는 다음과 같다.
+
+      <img width="30%" alt="image" src="https://github.com/user-attachments/assets/daa8b25e-edd6-4173-a203-d105ecbb2bd2" />
+
+   <br />
+   
+   > **`BINARY(16)`**
+   >
+   > - `BINARY(16)` 데이터 타입은 16바이트 크기의 고정 길이 이진 데이터, 주로 UUID를 저장하기 위해 사용된다.
+   > - UUID는 문자열 형태로 저장될 때 36바이트(32자 + 4개의 하이픈)을 차지하기 때문에 `BINARY(16)`으로 저장하면 16바이트만 사용하므로 저장공간을 절약할 수 있다.
+   >
+   >    - UUID 예시: `1fc454e5-b9f6-4d55-b783-5987fe76cb45`
+   >
+   > - MySQL에서는 `UUID_TO_BIN()` 함수를 사용해 UUID 문자열을 `BINARY(16)`으로 변환하고, `BIN_TO_UUID()` 함수를 사용해 `BINARY(16)`을 UUID 문자열로 변환할 수 있다.
 
 <br />
 
