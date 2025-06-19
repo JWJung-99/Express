@@ -12,6 +12,7 @@
 6. [AWS RDS 설정](#six-aws-rds-설정)
 7. [AWS RDS MySQL 연결](#seven-aws-rds-mysql-연결)
 8. [MySQL 함수](#eight-mysql-함수)
+9. [MySQL+Express](#nine-mysql-express-연동)
 
 [참고](#book-참고)
 
@@ -1008,6 +1009,130 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 	- 다음과 같이 데이터가 잘 삭제된 것을 확인할 수 있다.
 
  		<img width="40%" alt="image" src="https://github.com/user-attachments/assets/30f4134d-b8be-4599-af89-67bc5fe91732" />
+
+<br />
+
+## :nine: MySQL Express 연동
+
+### Promise
+
+- MySQL 함수는 비동기로 동작한다. `request`를 전달하고 MySQL에서 해당 SQL문에 대한 결과값을 반환하는데까지 시간이 필요하기 때문이다.
+
+	- 아래 코드의 `getNotes` 함수를 실행하면 `before`와 `after`가 먼저 출력된 이후 약간의 시간이 지난 후 데이터 조회 결과가 넘어오는 것을 확인할 수 있다.
+
+		```js
+		function getNotes() {
+		  console.log('before');
+		  pool.query(
+		    `SELECT BIN_TO_UUID(uuid, true) AS uuid, title, contents, created FROM notes`,
+		    function (err, rows, fields) {
+		      console.log(rows);
+		    }
+		  );
+		  console.log('after');
+		}
+		```
+  	
+  	<br />
+	 
+  	<img width="40%" alt="image" src="https://github.com/user-attachments/assets/db483a4c-53ec-448d-9d1e-ead1d545f62d" />
+
+- 따라서 코드의 흐름을 원하는대로 제어하기 위해 비동기 처리가 필요하다. `Promise`를 활용하거나 `async`/`await`을 이용할 수 있다.
+
+<br />
+
+### HTTP GET 만들기
+
+- `GET` `/notes`
+  
+	- 기존에 작성했던 `getNotes` 함수를 비동기 함수로 수정한다. (**[공식문서 참고](https://sidorares.github.io/node-mysql2/docs#using-connection-pools)**)
+	
+		```js
+	 	/**
+		 * 전체 note 목록을 가져오는 getNotes 함수
+		 * @returns {Array<{ uuid: string, title: string, contents: string, created: string }>}
+		 */
+		async function getNotes() {
+		  const [rows] = await pool.query(
+		    `SELECT BIN_TO_UUID(uuid, true) AS uuid, title, contents, created FROM notes`
+		  );
+		
+		  return rows;
+		}
+	 	```
+	
+	- 이어서 `/notes`로 GET 요청을 보내면 `getNotes` 함수를 이용해 데이터를 가져와 응답하는 api를 작성한다.
+	
+		```js
+		app.get('/notes', async(req, res) => {
+		  const result = await getNotes();
+		  res.send(result);
+		})
+	 	```
+	
+	 	- 약간의 시간이 지난 후 다음과 같이 데이터를 잘 불러오는 것을 확인할 수 있다.
+	
+			<img width="50%" alt="image" src="https://github.com/user-attachments/assets/c0a92925-6e57-437f-8100-013994c5dfc4" />
+
+<br />
+
+- `GET` `/notes/{uuid}`
+  
+	- 데이터 하나를 가져오는 `getNote` 함수 역시 비동기 함수로 수정한다.
+	
+		```js
+		/**
+		 * 매개변수에 전달한 uuid와 일치하는 note 한 개를 가져오는 getNote 함수
+		 * @param {string} uuid - note의 uuid
+		 * @returns {Array<{ uuid: string, title: string, contents: string, created: string }>}
+		 */
+		export async function getNote(uuid) {
+		  const [rows] = await pool.query(
+		    `SELECT BIN_TO_UUID(uuid, true) AS uuid, title, contents, created FROM notes WHERE uuid=UUID_TO_BIN('${uuid}', 1)`
+		  );
+		
+		  return rows;
+		}
+	 	```
+	
+	- `/notes:uuid`로 GET 요청을 보내면 `getNote` 함수를 이용해 데이터를 가져와 응답하는 api를 작성한다.
+		
+		```js
+		app.get('/note/:uuid', async (req, res, next) => {
+		  try {
+		    const uuid = req.params.uuid;
+		
+		    if (!uuid) throw new Error('400@No path parameter');
+		
+		    const result = await getNote(uuid);
+
+  	    if (!result) res.send({});
+		    if (result.length === 0) res.send({});
+
+        res.send(result[0]);
+		  } catch (err) {
+		    next(err);
+		  }
+		});
+		```
+
+	- 다음과 같이 데이터를 잘 불러오는 것을 확인할 수 있다.
+
+   	<img width="50%" alt="image" src="https://github.com/user-attachments/assets/c4d00c0d-fd01-4052-a288-f0b682b29a6e" />
+
+	- Express의 [공식문서](https://expressjs.com/en/guide/error-handling.html)를 따라 에러 핸들링 코드도 작성한다.
+
+ 		```js
+		app.use((err, req, res, next) => {
+		  console.error(err.stack);
+		  res.status(500).send('Something broke!');
+		});
+		```
+
+		- 위의 GET 메서드에서 `next`에 `err`를 전달했기 때문에 에러가 발생하면 에러 핸들링 코드로 넘어가 다음과 같이 에러라고 보여주는 것을 확인할 수 있다.
+
+			<img width="50%" alt="image" src="https://github.com/user-attachments/assets/9fad141c-a8f0-41f7-9625-7ed3d3a24ba8" />
+
 
 <br />
 
