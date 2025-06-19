@@ -34,3 +34,42 @@ export async function getNote(uuid) {
 
 	return rows;
 }
+
+/**
+ * 새로운 note를 추가하는 addNote 함수
+ * @param {string} title - note의 제목
+ * @param {string} contents - note의 내용
+ */
+export async function addNote(title, contents) {
+	await pool.query(
+		`INSERT INTO notes (title, contents) VALUES('${title}', '${contents}')`
+	);
+}
+
+/**
+ * 매개변수에 전달한 uuid와 일치하는 note의 데이터를 수정하는 updateNote 함수
+ * @param {string} uuid - 수정하려는 note의 uuid
+ * @param {string} title - 수정한 note의 제목
+ * @param {string} contents - 수정한 note의 내용
+ * @returns {{fieldCount: number, affectedRows: number, insertId: number, info: string, serverStatus: number, warningStatus: number, changedRows: number}}
+ */
+export async function updateNote(uuid, title, contents) {
+	const [rows] = await pool.query(
+		`UPDATE notes SET title='${title}',contents='${contents}' WHERE uuid=UUID_TO_BIN('${uuid}', 1)`
+	);
+
+	return rows;
+}
+
+/**
+ * 매개변수에 전달한 uuid와 일치하는 note의 데이터를 삭제하는 deleteNote 함수
+ * @param {string} uuid - 삭제하려는 note의 uuid
+ * @returns {{fieldCount: number, affectedRows: number, insertId: number, info: string, serverStatus: number, warningStatus: number}}
+ */
+export async function deleteNote(uuid) {
+	const [rows] = await pool.query(
+		`DELETE FROM notes WHERE uuid=UUID_TO_BIN('${uuid}', 1)`
+	);
+
+	return rows;
+}
