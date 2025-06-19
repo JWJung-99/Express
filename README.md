@@ -1183,7 +1183,7 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 		```js
 		/**
 		 * 매개변수에 전달한 uuid와 일치하는 note의 데이터를 수정하는 updateNote 함수
-		 * @param {string} uuid - note의 uuid
+		 * @param {string} uuid - 수정하려는 note의 uuid
 		 * @param {string} title - 수정한 note의 제목
 		 * @param {string} contents - 수정한 note의 내용
 		 * @returns {{fieldCount: number, affectedRows: number, insertId: number, info: string, serverStatus: number, warningStatus: number, changedRows: number}}
@@ -1199,46 +1199,100 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
   - `/note/:uuid`로 PUT 요청을 보내면 `updateNote` 함수를 이용해 데이터를 수정하는 api를 작성한다. 에러를 자세하게 명시하여 어떤 에러가 발생했는지 응답에서 확인할 수 있도록 작성한다.
  
-		```js
-	  app.put('/note/:uuid', async (req, res, next) => {
-	    try {
-	      const uuid = req.params.uuid;
-	      const { title, contents } = req.body;
-	
-	      if (!uuid) {
-	        const error = new Error('No parameter');
-	        error.status = 400;
-	        throw error;
-	      }
-	      if (!title || !contents) {
-	        const error = new Error('No required data');
-	        error.status = 400;
-	        throw error;
-	      }
-	
-	      const result = await updateNote(uuid, title, contents);
-	
-	      if (result.affectedRows !== 1) {
-	        const error = new Error('Not updated');
-	        error.status = 400;
-	        throw error;
-	      }
-	
-	      res.sendStatus(204);
-	    } catch (err) {
-	      next(err);
-	    }
-	  });
-		```
-   
-		<br />
-   
-	- 데이터를 잘 수정하면 왼쪽과 같이 `204 No Content`를 응답하고, 만약 데이터가 하나라도 없으면 `400 No required data`를 반환하는 것을 볼 수 있다.
-	 
-		|**성공적으로 수정한 경우**|**필수 데이터를 보내지 않은 경우**|
-		|:---:|:---:|
-		|<img alt="image" src="https://github.com/user-attachments/assets/2225ec57-a3dc-46f0-8f26-4a04dfe86b5a" />|<img alt="image" src="https://github.com/user-attachments/assets/2126e38d-de7f-4f1a-bbb8-e94abf04dbd5" />|
+    ```js
+    app.put('/note/:uuid', async (req, res, next) => {
+      try {
+        const uuid = req.params.uuid;
+        const { title, contents } = req.body;
+    
+        if (!uuid) {
+          const error = new Error('No parameter');
+          error.status = 400;
+          throw error;
+        }
+        if (!title || !contents) {
+          const error = new Error('No required data');
+          error.status = 400;
+          throw error;
+        }
+    
+        const result = await updateNote(uuid, title, contents);
+    
+        if (result.affectedRows !== 1) {
+          const error = new Error('Not updated');
+          error.status = 400;
+          throw error;
+        }
+    
+        res.sendStatus(204);
+      } catch (err) {
+        next(err);
+      }
+    });
+    ```
 
+    
+    - 데이터를 잘 수정하면 왼쪽과 같이 `204 No Content`를 응답하고, 만약 데이터가 하나라도 없으면 `400 No required data`를 반환하는 것을 볼 수 있다.
+    
+      |**성공적으로 수정한 경우**|**필수 데이터를 보내지 않은 경우**|
+      |:---:|:---:|
+      |<img alt="image" src="https://github.com/user-attachments/assets/2225ec57-a3dc-46f0-8f26-4a04dfe86b5a" />|<img alt="image" src="https://github.com/user-attachments/assets/2126e38d-de7f-4f1a-bbb8-e94abf04dbd5" />|
+
+<br />
+
+### HTTP DELETE 만들기
+
+- `DELETE` `/note/:uuid`
+
+  - `deleteNote` 함수를 비동기 함수로 수정한다.
+
+    ```js
+    /**
+     * 매개변수에 전달한 uuid와 일치하는 note의 데이터를 삭제하는 deleteNote 함수
+     * @param {string} uuid - 삭제하려는 note의 uuid
+     * @returns {{fieldCount: number, affectedRows: number, insertId: number, info: string, serverStatus: number, warningStatus: number}}
+     */
+    export async function deleteNote(uuid) {
+      const [rows] = await pool.query(
+        `DELETE FROM notes WHERE uuid=UUID_TO_BIN('${uuid}', 1)`
+      );
+    
+      return rows;
+    }
+    ```
+
+  - `/note/:uuid`로 DELETE 요청을 보내면 `deleteNote` 함수를 이용해 데이터를 삭제하는 api를 작성한다.
+
+    ```js
+    app.delete('/note/:uuid', async (req, res, next) => {
+      try {
+        const uuid = req.params.uuid;
+    
+        if (!uuid) {
+          const error = new Error('No parameter');
+          error.status = 400;
+          throw error;
+        }
+    
+        const result = await deleteNote(uuid);
+    
+        if (result.affectedRows !== 1) {
+          const error = new Error('Failed to delete');
+          error.status = 400;
+          throw error;
+        }
+    
+        res.sendStatus(204);
+      } catch (err) {
+        next(err);
+      }
+    });
+    ```
+
+  - 다음과 같이 데이터를 잘 삭제하는 것을 확인할 수 있다.
+
+    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/8c7e2a1a-2c49-4985-8434-cd6486fceee3" />
+    
 
 <br />
 
