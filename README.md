@@ -917,6 +917,100 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
 <br />
 
+- 데이터베이스의 테이블에서 하나의 데이터만 가져오기 위한 함수를 작성한다.
+
+	```js
+	function getNote(uuid) {
+	  pool.query(
+	    `SELECT BIN_TO_UUID(uuid, true) AS uuid, title, contents, created FROM notes WHERE uuid=UUID_TO_BIN('${uuid}', 1)`,
+	    function (err, rows, fields) {
+	      console.log(rows);
+	    }
+	  );
+	}
+	
+	getNote(uuid);
+ 	```
+
+ - 다음과 같이 하나의 데이터만 잘 가져오는 것을 확인할 수 있다.
+
+	 <img width="40%" alt="image" src="https://github.com/user-attachments/assets/0ac2c13f-ec87-49bc-9a00-19900b87f2f7" />
+
+<br />
+
+### INSERT 함수
+
+- 데이터베이스의 테이블에 데이터를 추가하기 위한 함수를 작성한다.
+
+  ```js
+	function addNote(title, contents) {
+	  pool.query(
+	    `INSERT INTO notes (title, contents) VALUES('${title}', '${contents}')`,
+	    function (err, rows, fields) {
+	      console.log(rows);
+	    }
+	  );
+	}
+	
+	addNote('My Third Note', 'A note about something else');
+  ```
+
+	- 다음과 같이 데이터가 잘 추가된 것을 확인할 수 있다.
+
+		<img width="40%" alt="image" src="https://github.com/user-attachments/assets/6edb5632-3eae-4c52-984a-5081acd749b1" />
+
+<br />
+
+### UPDATE 함수
+
+- 데이터베이스의 테이블의 데이터를 변경하기 위한 함수를 작성한다.
+
+	```js
+	function updateNote(uuid, title, contents) {
+	  pool.query(
+	    `UPDATE notes SET title='${title}',contents='${contents}' WHERE uuid=UUID_TO_BIN('${uuid}', 1)`,
+	    function (err, rows, fields) {
+	      console.log(rows);
+	    }
+	  );
+	}
+	
+	updateNote(
+	  uuid,
+	  'Updated - My Third Note',
+	  'Updated - A note about something else'
+	);
+ 	```
+
+ 	- 다음과 같이 데이터가 잘 변경된 것을 확인할 수 있다.
+
+		<img width="40%" alt="image" src="https://github.com/user-attachments/assets/9e8b208d-7630-40dd-a431-f860403ca722" />
+
+<br />
+
+### DELETE 함수
+
+- 데이터베이스의 테이블에서 데이터를 삭제하기 위한 함수를 작성한다.
+
+	```js
+	function deleteNote(uuid) {
+	  pool.query(
+	    `DELETE FROM notes WHERE uuid=UUID_TO_BIN('${uuid}', 1)`,
+	    function (err, rows, fields) {
+	      console.log(rows);
+	    }
+	  );
+	}
+	
+	deleteNote(uuid);
+ 	```
+
+	- 다음과 같이 데이터가 잘 삭제된 것을 확인할 수 있다.
+
+ 		<img width="40%" alt="image" src="https://github.com/user-attachments/assets/30f4134d-b8be-4599-af89-67bc5fe91732" />
+
+<br />
+
 ## :book: 참고
 
 - [Express.js 공식문서](https://expressjs.com/)
