@@ -1344,24 +1344,43 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
 - 이어서 데이터베이스에 `connect` 및  `release`까지 수행해야 하는데, 이 과정에서 에러를 마주한다.
 
-	- PostgreSQL RDS의 경우 `rds.force_ssl` 파라미터를 사용하여 SSL을 사용하도록 설정하는데, PostgreSQL 버전 15이상은 rds.force_ssl 파라미터 기본값이 1(켜짐)이라서 에러가 난 것이다.
+  ```js
+  const client = await pool.connect();
+  const res = await client.query(`SELECT NOW()`);
+  console.log(res);
+  client.release();
+  ```
 
-		<img width="40%" alt="image" src="https://github.com/user-attachments/assets/35ea1fe5-e875-4b1b-a378-46c53a466d62" />
+<br />
 
-		- 이를 해결하기 위해서는 PostgreSQL 버전을 14로 내리거나, 파라미터 값을 수정하거나, SSL을 포함하여 DB를 연결하는 방법이 있을 것이다. 보안을 위해서 세 번째 방법으로 해결하는 것이 좋지만 작은 프로젝트이기 때문에 2번의 방법으로 문제를 해결한다.
+  <img width="40%" alt="image" src="https://github.com/user-attachments/assets/35ea1fe5-e875-4b1b-a378-46c53a466d62" />
+  
+<br />
+<br />
 
-			- 먼저 데이터베이스의 **구성** 탭에서 DB 인스턴스 파라미터 그룹을 수정해야 한다.
-      
-      	<img width="50%" alt="image" src="https://github.com/user-attachments/assets/906676b0-dda2-4de3-aac3-e3a227a51708" />
+  > **에러 핸들링**
+  >
+  > PostgreSQL RDS의 경우 `rds.force_ssl` 파라미터를 사용하여 SSL을 사용하도록 설정하는데, PostgreSQL 버전 15이상은 rds.force_ssl 파라미터 기본값이 1(켜짐)이라서 에러가 난 것이다.
+  >
+  > - 이를 해결하기 위해서는 PostgreSQL 버전을 14로 내리거나, 파라미터 값을 수정하거나, SSL을 포함하여 DB를 연결하는 방법이 있을 것이다. 보안을 위해서 세 번째 방법으로 해결하는 것이 좋지만 작은 프로젝트이기 때문에 두 번째 방법으로 문제를 해결한다.
+  >
+  > - 먼저 데이터베이스의 **구성** 탭에서 DB 인스턴스 파라미터 그룹을 수정해야 한다.
+  > 
+  >   <img width="40%" alt="image" src="https://github.com/user-attachments/assets/906676b0-dda2-4de3-aac3-e3a227a51708" />
+  >
+  > - 파라미터 그룹에서 `rds.force_ssl`을 검색해보면 값이 `1`인 것을 확인할 수 있다. 파라미터 그룹을 새로 생성한 다음 값을 `0`으로 바꾸고 RDS와 연결한다.
+  >
+  >   |**`rds.force_ssl`**|**파라미터 그룹 생성**|
+  >   |:---:|:---:|
+  >   |<img alt="image" src="https://github.com/user-attachments/assets/b805f140-6c10-436f-9be2-3386f7824c25" />|<img alt="image" src="https://github.com/user-attachments/assets/db7eab9d-b914-43dc-b5c7-f7c281f5bbeb" />|
+  >   |**`rds.force_ssl` 값 변경**|**RDS에 연결**|
+  >   |<img alt="image" src="https://github.com/user-attachments/assets/56f244b9-20df-4ac5-aff4-87c28bc30ea9" />|<img alt="image" src="https://github.com/user-attachments/assets/c625a029-a950-4403-a1a3-a0157fe7f965" />|
 
-			- 파라미터 그룹에서 `rds.force_ssl`을 검색해보면 값이 `1`인 것을 확인할 수 있다. 파라미터 그룹을 새로 생성한 다음 값을 `0`으로 바꾸고 RDS와 연결한다.
+<br />
 
-				|`rds.force_ssl`|**파라미터 그룹 생성**|
-				|:---:|:---:|
-				|<img alt="image" src="https://github.com/user-attachments/assets/b805f140-6c10-436f-9be2-3386f7824c25" />|<img alt="image" src="https://github.com/user-attachments/assets/db7eab9d-b914-43dc-b5c7-f7c281f5bbeb" />|
-				|`rds.force_ssl` 값 변경|**RDS에 연결**|
-				|<img alt="image" src="https://github.com/user-attachments/assets/56f244b9-20df-4ac5-aff4-87c28bc30ea9" />|<img alt="image" src="https://github.com/user-attachments/assets/c625a029-a950-4403-a1a3-a0157fe7f965" />|
+  - 위 과정을 진행하면 다음과 같이 PostgreSQL 데이터베이스에 잘 접속한 것을 확인할 수 있다.
 
+    <img width="40%" alt="image" src="https://github.com/user-attachments/assets/27c8c02d-e6af-407d-b3be-029cd7a9bf4b" />
 
 
 <br />
@@ -1370,3 +1389,4 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
 - [Express.js 공식문서](https://expressjs.com/)
 - [MFA 인증](https://aws.amazon.com/ko/blogs/tech/all-for-mfa-in-aws-environment/)
+- [Server Error error: no pg_hba.conf entry for host "", user "", database "", no encryption PostgreSQL 연결 에러 해결](https://sorrel012.tistory.com/407)
