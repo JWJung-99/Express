@@ -10,6 +10,8 @@ const pool = mysql.createPool({
 	database: 'db_test',
 });
 
+console.log(process.env.MYSQL_RDS_USERNAME);
+
 /**
  * SELECT 함수
  */
@@ -33,7 +35,7 @@ function getNote(uuid) {
 	);
 }
 
-getNote('7e1b5bf6-4d04-11f0-adb9-06ecff2d3aa3');
+// getNote('7e1b5bf6-4d04-11f0-adb9-06ecff2d3aa3');
 
 /**
  * INSERT 함수
