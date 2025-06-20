@@ -1298,6 +1298,72 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
 ## :keycap_ten: AWS RDS PostgreSQL 연결
 
+### AWS RDS PostgreSQL 설정
+
+- [위에서 진행한 과정](#six-aws-rds-설정)과 동일하게 PostgreSQL을 사용하기 위한 VPC, RDS를 구축한다.
+
+  - VPC 생성과 RDS 서브넷 그룹 설정 및 언급하지 않은 DB 설정은 위와 동일하다.
+
+	- PostgreSQL 엔진을 사용한 RDS를 생성한다.
+
+		<img width="50%" alt="image" src="https://github.com/user-attachments/assets/62364492-7e21-4460-bb2c-5433095cb769" />
+
+ 	- PostgreSQL의 경우 `5432` 포트를 사용하는 것을 알 수 있다.
+
+		<img width="50%" alt="image" src="https://github.com/user-attachments/assets/c38901f5-172c-4847-a8be-285680461840" />
+
+<br />
+
+### Express PostgreSQL 설정
+
+- Express에서 PostgreSQL에 접근할 수 있도록 **[pg](https://www.npmjs.com/package/pg)** 라는 패키지를 설치한다.
+
+	```bash
+ 	npm install pg
+ 	```
+
+<br />
+
+> **[node-postgres 공식문서](https://node-postgres.com/)**
+
+<br />
+
+- [공식문서](https://node-postgres.com/features/connecting#programmatic)를 참고하여 데이터베이스 연결을 위한 Pool 객체를 생성한다.
+
+	```js
+	import { Pool } from 'pg';
+	import 'dotenv/config';
+	
+	const pool = new Pool({
+	  host: process.env.POSTGRESQL_RDS_ENDPOINT,
+	  user: process.env.POSTGRESQL_RDS_USERNAME,
+	  password: process.env.POSTGRESQL_RDS_PASSWORD,
+	  port: 5432,
+	});
+ 	```
+
+- 이어서 데이터베이스에 `connect` 및  `release`까지 수행해야 하는데, 이 과정에서 에러를 마주한다.
+
+	- PostgreSQL RDS의 경우 `rds.force_ssl` 파라미터를 사용하여 SSL을 사용하도록 설정하는데, PostgreSQL 버전 15이상은 rds.force_ssl 파라미터 기본값이 1(켜짐)이라서 에러가 난 것이다.
+
+		<img width="40%" alt="image" src="https://github.com/user-attachments/assets/35ea1fe5-e875-4b1b-a378-46c53a466d62" />
+
+		- 이를 해결하기 위해서는 PostgreSQL 버전을 14로 내리거나, 파라미터 값을 수정하거나, SSL을 포함하여 DB를 연결하는 방법이 있을 것이다. 보안을 위해서 세 번째 방법으로 해결하는 것이 좋지만 작은 프로젝트이기 때문에 2번의 방법으로 문제를 해결한다.
+
+			- 먼저 데이터베이스의 **구성** 탭에서 DB 인스턴스 파라미터 그룹을 수정해야 한다.
+      
+      	<img width="50%" alt="image" src="https://github.com/user-attachments/assets/906676b0-dda2-4de3-aac3-e3a227a51708" />
+
+			- 파라미터 그룹에서 `rds.force_ssl`을 검색해보면 값이 `1`인 것을 확인할 수 있다. 파라미터 그룹을 새로 생성한 다음 값을 `0`으로 바꾸고 RDS와 연결한다.
+
+				|`rds.force_ssl`|**파라미터 그룹 생성**|
+				|:---:|:---:|
+				|<img alt="image" src="https://github.com/user-attachments/assets/b805f140-6c10-436f-9be2-3386f7824c25" />|<img alt="image" src="https://github.com/user-attachments/assets/db7eab9d-b914-43dc-b5c7-f7c281f5bbeb" />|
+				|`rds.force_ssl` 값 변경|**RDS에 연결**|
+				|<img alt="image" src="https://github.com/user-attachments/assets/56f244b9-20df-4ac5-aff4-87c28bc30ea9" />|<img alt="image" src="https://github.com/user-attachments/assets/c625a029-a950-4403-a1a3-a0157fe7f965" />|
+
+
+
 <br />
 
 ## :book: 참고
