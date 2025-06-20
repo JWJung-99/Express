@@ -13,6 +13,7 @@
 7. [AWS RDS MySQL 연결](#seven-aws-rds-mysql-연결)
 8. [MySQL 함수](#eight-mysql-함수)
 9. [MySQL+Express](#nine-mysql-express-연동)
+10. [AWS RDS PostgreSQL 연결](#keycap_ten-aws-rds-postgresql-연결)
 
 [참고](#book-참고)
 
@@ -1293,6 +1294,9 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
     <img width="50%" alt="image" src="https://github.com/user-attachments/assets/8c7e2a1a-2c49-4985-8434-cd6486fceee3" />
     
+<br />
+
+## :keycap_ten: AWS RDS PostgreSQL 연결
 
 <br />
 
