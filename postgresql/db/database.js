@@ -6,9 +6,11 @@ const pool = new Pool({
 	user: process.env.POSTGRESQL_RDS_USERNAME,
 	password: process.env.POSTGRESQL_RDS_PASSWORD,
 	port: 5432,
+	database: 'db_test',
 });
 
 const client = await pool.connect();
-const res = await client.query(`SELECT NOW()`);
-console.log(res);
+// const res = await client.query(`CREATE DATABASE db_test WITH ENCODING='UTF-8'`);
+const res = await client.query(`SELECT * FROM notes`);
+console.log(res.rows);
 client.release();
