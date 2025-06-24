@@ -1469,6 +1469,10 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
 <br />
 
+### 1️⃣1️⃣ PostgreSQL 데이터베이스 연결
+
+
+
 ## :book: 참고
 
 - [Express.js 공식문서](https://expressjs.com/)
