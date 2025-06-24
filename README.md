@@ -14,6 +14,7 @@
 8. [MySQL 함수](#eight-mysql-함수)
 9. [MySQL+Express](#nine-mysql-express-연동)
 10. [AWS RDS PostgreSQL 연결](#keycap_ten-aws-rds-postgresql-연결)
+11. [PostgreSQL 데이터베이스 연결](#oneone-postgresql-데이터베이스-연결)
 
 [참고](#book-참고)
 
@@ -1469,7 +1470,7 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
 <br />
 
-### 1️⃣1️⃣ PostgreSQL 데이터베이스 연결
+### :one::one: PostgreSQL 데이터베이스 연결
 
 
 
