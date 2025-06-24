@@ -1382,6 +1382,90 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
     <img width="40%" alt="image" src="https://github.com/user-attachments/assets/27c8c02d-e6af-407d-b3be-029cd7a9bf4b" />
 
+<br />
+
+### 데이터베이스 생성
+
+- PostgreSQL을 이용해 데이터베이스를 생성한다.
+
+  ```js
+  const client = await pool.connect();
+	const res = await client.query(
+	  `CREATE DATABASE db_test WITH ENCODING='UTF-8'`
+	);
+	console.log(res.rows);
+	client.release();
+	```
+
+- 다음 쿼리문을 이용해 데이터베이스를 조회해보면 `db_test`가 생성된 것을 확인할 수 있다.
+
+	```js
+	const client = await pool.connect();
+	const res = await client.query(`SELECT datname FROM pg_database`);
+	console.log(res.rows);
+	client.release();
+ 	```
+
+	<img width="40%" alt="image" src="https://github.com/user-attachments/assets/62fd3dc3-6568-4ef6-b32d-de6567cb0e78" />
+
+<br />
+
+### 테이블 생성
+
+- 데이터베이스 접속을 위해 기존 `Pool` 생성자 함수의 내에 `database` 항목을 추가한다.
+
+	```js
+	const pool = new Pool({
+	  host: process.env.POSTGRESQL_RDS_ENDPOINT,
+	  user: process.env.POSTGRESQL_RDS_USERNAME,
+	  password: process.env.POSTGRESQL_RDS_PASSWORD,
+	  port: 5432,
+    database: "db_test"
+	});
+ 	```
+
+- 데이터베이스에 접속해 테이블을 생성한다.
+
+  ```js
+	const res = await client.query(`CREATE TABLE notes (
+    "uuid" UUID DEFAULT gen_random_uuid(),
+    title VARCHAR NOT NULL,
+    contents VARCHAR NOT NULL,
+    created TIMESTAMP DEFAULT NOW(),
+    PRIMARY KEY("uuid")
+  )`);
+  ```
+
+- 테이블을 조회해보면 다음과 같이 테이블이 잘 생성된 것을 확인할 수 있다.
+
+	```js
+	const res = await client.query(
+	  `SELECT table_schema,table_name FROM information_schema.tables WHERE table_schema != 'pg_catalog' AND table_schema != 'information_schema'`
+	);
+	console.log(res.rows);
+ 	```
+
+	<img width="335" alt="image" src="https://github.com/user-attachments/assets/94cf9ced-7e08-422a-8c49-28b80342dbad" />
+
+<br />
+
+### 데이터 넣기
+
+- `notes` 테이블에 데이터를 삽입한다.
+
+  ```js
+	const res = await client.query(
+	  `INSERT INTO notes (title, contents) VALUES ('title1', 'content1');`
+	);
+  ```
+
+- `notes` 테이블을 확인해보면 다음과 같이 데이터가 잘 생성된 것을 확인할 수 있다.
+
+	```js
+	const res = await client.query(`SELECT * FROM notes`);
+ 	```
+
+	<img width="40%" alt="image" src="https://github.com/user-attachments/assets/8d0073ff-72f3-4b20-8606-77157197842c" />
 
 <br />
 
