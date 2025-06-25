@@ -16,6 +16,7 @@
 10. [AWS RDS PostgreSQL 연결](#keycap_ten-aws-rds-postgresql-연결)
 11. [PostgreSQL 데이터베이스 연결](#oneone-postgresql-데이터베이스-연결)
 12. [PostgreSQL+Express](#onetwo-postgresql-express-연동)
+13. [MongoDB 데이터베이스 연결](#onethree-mongodb-데이터베이스-연결)
 
 [참고](#book-참고)
 
@@ -1753,6 +1754,233 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
     |**DELETE 요청 결과**|**GET 요청 결과**|
     |:---:|:---:|
     |<img alt="image" src="https://github.com/user-attachments/assets/9abce50a-63e6-4fe0-b718-c0104b3117b4" />|<img  alt="image" src="https://github.com/user-attachments/assets/8b249e2f-671d-4988-8e1d-6c328eb930b6" />|
+
+<br />
+
+## :one::three: MongoDB 데이터베이스 연결
+
+### MongoDB 프로젝트 설정
+
+- MongoDB에 로그인한 후 Organization > Projects 탭에서 새로운 프로젝트를 생성한다.
+
+  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/3e3fc1c3-047d-4a4f-bc83-e58ce2dcd221" />
+
+- 프리티어로 데이터베이스를 생성한다.
+
+	<img width="50%" alt="image" src="https://github.com/user-attachments/assets/b312817b-cef3-4b54-a63c-e89e09d11515" />
+
+- 생성한 데이터베이스에 Driver 방식으로 연결한다.
+
+	<img width="50%" alt="image" src="https://github.com/user-attachments/assets/5d12fd07-63c9-43fb-951e-065322da607a" />
+
+- 네트워크 IP를 설정한다. 정해진 EC2에서만 접속을 허용하려면 EC2의 IP 주소를 입력하면 되고, 외부에서 접근을 허용하려면 다음과 같이 Access from Anywhere로 설정한다.
+
+	<img width="50%" alt="image" src="https://github.com/user-attachments/assets/b7f647a0-b9d0-47f0-b65d-2e9a3bfdaeda" />
+
+- MongoDB는 collections라는 이름으로 데이터베이스 테이블을 생성한다. Clusters > Collections 탭에서 notes라는 새로운 collection을 생성한다.
+
+	<img width="50%" alt="image" src="https://github.com/user-attachments/assets/e242cd78-42c8-41aa-ad04-e2615f3a9d3d" />
+
+<br />
+
+### MongoDB 실행 환경 구성
+
+- 프로젝트에서 `mongodb` 패키지를 설치한다.
+
+	```bash
+ 	npm install mongodb
+ 	```
+ 
+- MongoDB 공식문서에서 제공하는 connection code를 복사하여 적용하고 비밀번호를 변경한다.
+
+	<img width="50%" alt="image" src="https://github.com/user-attachments/assets/4b204a7d-a0c1-4d3b-a239-fa41a4bddf7d" />
+
+- 다음과 같이 MongoDB 데이터베이스에 성공적으로 접속한 것을 확인할 수 있다.
+
+	<img width="40%" alt="image" src="https://github.com/user-attachments/assets/79864c12-1f73-4600-9095-4b77741651da" />
+
+- MongoDB 공식문서의 [가이드](https://www.mongodb.com/ko-kr/docs/manual/core/databases-and-collections/#create-a-database)에 따라 `db_test` 데이터베이스의 `notes` 컬렉션에 데이터 추가를 테스트한다.
+
+	```js
+	async function run() {
+	  try {
+	    // Connect the client to the server	(optional starting in v4.7)
+	    await client.connect();
+	    // Send a ping to confirm a successful connection
+	    const db = client.db("db_test");
+	    const collection = db.collection("notes");
+	    await collection.insertOne({title: "title1", contents: "contents1"})
+	    console.log(
+	      'Pinged your deployment. You successfully connected to MongoDB!'
+	    );
+	  } finally {
+	    // Ensures that the client will close when you finish/error
+	    await client.close();
+	  }
+	}
+	run().catch(console.dir);
+ 	```
+
+ 	- 다음과 같이 컬렉션에 데이터가 잘 추가된 것을 확인할 수 있다.
+
+		<img width="50%" alt="image" src="https://github.com/user-attachments/assets/7986de99-9fb9-4405-90f6-c669b9f8a421" />
+
+<br />
+
+> **MongoDB Quick Reference**
+> 
+> [MongoDB Docs](https://www.mongodb.com/docs/drivers/node/current/reference/quick-reference/)
+
+<br />
+
+### INSERT 함수
+
+- notes 테이블에 데이터를 추가하는 INSERT 함수를 설계한다.
+
+  ```js
+  async function addNote(title, contents) {
+    await collection.insertOne({
+      title,
+      contents,
+      created: new Date(),
+    });
+  }
+  
+  await addNote('title1', 'content1');
+  ```
+
+  - 데이터베이스를 확인해보면 데이터가 잘 추가된 것을 볼 수 있다.
+
+    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/8a2db6f5-f26c-433b-ab22-028ecacc6318" />
+
+<br />
+
+### SELECT 함수
+
+- notes 테이블에서 데이터를 **조건 없이** 검색하는 SELECT 함수를 설계한다.
+
+  - 조건 없이 여러 개의 데이터를 가져올 때는 **`find` 메서드를 실행한 값을 `cursor`라는 변수에 담아 이를 배열 형태로 반환**한다.
+
+  ```js
+  /**
+   * notes에 저장된 데이터를 조회하는 SELECT 함수
+   * @returns {Array<{ _id: object, title: string, contents: string, created: object }>}
+   */
+  async function getNotes() {
+    const cursor = collection.find();
+    const result = await cursor.toArray();
+  
+    console.log(result);
+  
+    return result;
+  }
+  
+  await getNotes();
+  ```
+
+  <img width="40%" alt="image" src="https://github.com/user-attachments/assets/deaf16c9-bdca-4377-a84e-02fd737d05e8" />
+
+  - 하지만 `_id` 값이 `string`이 아닌 `object` 타입인 것을 확인할 수 있다. 이 문제를 해결하기 위해 `find`의 매개변수로 projection document를 전달해 원하는 `field`를 선택하거나 원하는 형태로 변경할 수 있다. ([공식문서](https://www.mongodb.com/docs/manual/reference/method/db.collection.find/#std-label-find-projection))
+
+    ```js
+    const cursor = collection.find(
+  	  {},
+  	  {
+  	    projection: {
+  	      _id: { $toString: '$_id' },
+  	      title: 1,
+  	      contents: 1,
+  	      created: 1,
+  	    },
+      }
+  	);
+    ```
+
+  - 최종 검색 결과는 다음과 같다.
+    
+    <img width="40%" alt="image" src="https://github.com/user-attachments/assets/6cd3a6c4-585c-44fa-a9e0-6191ea59a044" />
+
+<br />
+
+- notes 테이블에서 해당 `id`값을 가진 데이터를 검색하는 SELECT 함수를 설계한다. `find` 메서드의 첫 번째 인수로 검색 조건을 전달하고, `_id` 값을 `string` 형태로 응답받기 위해 위와 마찬가지로 projection document를 전달한다.
+
+  ```js
+  /**
+   * notes에서 특정 id 값을 갖는 데이터를 검색하는 SELECT 함수
+   * @param {string} id - notes에서 찾고자 하는 데이터의 id
+   * @returns {Array<{ _id: string, title: string, contents: string, created: object }>}
+   */
+  async function getNote(id) {
+    const result = await collection.findOne(
+      { _id: new ObjectId(id) },
+      {
+        projection: {
+          _id: { $toString: '$_id' },
+          title: 1,
+          contents: 1,
+          created: 1,
+        },
+      }
+    );
+    console.log(result);
+    return result;
+  }
+  
+  await getNote('685c07c2f2bf41a1da48235a');
+  ```
+
+  - 검색 결과는 다음과 같다.
+
+    <img width="40%" alt="image" src="https://github.com/user-attachments/assets/8b368ecd-99c9-4d1b-8458-70e4249f5c61" />
+
+<br />
+
+### UPDATE 함수
+
+- notes 테이블에서 특정 `id` 값을 가진 데이터를 찾아 값을 변경하는 UPDATE 함수를 설계한다. `updateOne` 메서드의 첫 번째 인수로 조건을 전달하고, 두 번째 인수로 변경할 데이터를 `$set` 프로퍼티의 값으로 전달한다.
+
+  ```js
+  /**
+   * notes에서 특정 id 값을 갖는 note의 데이터를 변경하는 UPDATE 함수
+   * @param {string} id - 변경할 note의 id
+   * @param {string} title - 변경할 note의 제목
+   * @param {string} contents - 변경할 note의 내용
+   */
+  async function updateNote(id, title, contents) {
+    await collection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { title: title, contents: contents } }
+    );
+  }
+  
+  await updateNote('685c07c2f2bf41a1da48235a', 'title1', 'content1 - updated');
+  ```
+
+  - 데이터베이스를 확인해보면 다음과 같이 값이 잘 변경된 것을 확인할 수 있다.
+
+    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/07fd1a09-5429-4ac0-bfd5-bcca915d6b56" />
+
+<br />
+
+### DELETE 함수
+
+- notes 테이블에서 특정 `id` 값을 가진 데이터를 삭제하는 DELETE 함수를 설계한다.
+
+  ```js
+  /**
+   * notes에서 특정 id 값을 갖는 note를 삭제하는 DELETE 함수
+   * @param {string} id - 삭제할 note의 id
+   */
+  async function deleteNote(id) {
+    await collection.deleteOne({ _id: new ObjectId(id) });
+  }
+  
+  await deleteNote('685c14819c9f271a6c91a5b4');
+  ```
+
+  - 데이터베이스를 확인해보면 다음과 같이 값이 삭제된 것을 확인할 수 있다.
+
+    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/23e64872-4cef-4424-b523-6a19c194591c" />
 
 <br />
 
