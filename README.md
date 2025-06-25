@@ -1958,7 +1958,7 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
   - 데이터베이스를 확인해보면 다음과 같이 값이 잘 변경된 것을 확인할 수 있다.
 
-    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/08a67be6-79f3-4e55-bf3b-724cb6c910ef" />
+    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/07fd1a09-5429-4ac0-bfd5-bcca915d6b56" />
 
 <br />
 
@@ -1980,7 +1980,7 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
   - 데이터베이스를 확인해보면 다음과 같이 값이 삭제된 것을 확인할 수 있다.
 
-    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/f7552936-8f81-42af-93c4-81dea6f68f6a" />
+    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/23e64872-4cef-4424-b523-6a19c194591c" />
 
 <br />
 
