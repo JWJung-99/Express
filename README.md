@@ -945,7 +945,7 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
 - 데이터베이스의 테이블에 데이터를 추가하기 위한 함수를 작성한다.
 
-  ```js
+	```js
 	function addNote(title, contents) {
 	  pool.query(
 	    `INSERT INTO notes (title, contents) VALUES('${title}', '${contents}')`,
@@ -956,7 +956,7 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 	}
 	
 	addNote('My Third Note', 'A note about something else');
-  ```
+ 	```
 
 	- 다음과 같이 데이터가 잘 추가된 것을 확인할 수 있다.
 
@@ -1470,9 +1470,145 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
 <br />
 
-### :one::one: PostgreSQL 데이터베이스 연결
+## :one::one: PostgreSQL 데이터베이스 연결
 
+### SELECT 함수 만들기
 
+- notes 테이블에 있는 모든 데이터를 가져오는 SELECT 함수를 설계한다. 데이터를 불러오는 작업은 비동기로 이루어지므로 비동기 함수를 작성한다.
+
+  ```js
+  /**
+	 * notes 테이블에 있는 모든 데이터를 가져오는 SELECT 함수
+	 * @returns {Array<{ uuid: string, title: string, contents: string, created: string }>}
+	 */
+	async function getNotes() {
+	  const client = await pool.connect();
+	  const res = await client.query(`SELECT * FROM notes`);
+	  console.log(res.rows);
+	  client.release();
+  	return res.rows;
+	}
+	
+	await getNotes();
+  ```
+
+	- 다음과 같이 결과를 잘 가져오는 것을 확인할 수 있다.
+
+ 		<img width="40%" alt="image" src="https://github.com/user-attachments/assets/b4da099d-1873-4e91-88d6-f9e2192d5447" />
+
+- notes 테이블에서 `uuid`가 일치하는 데이터를 가져오는 SELECT 함수를 설계한다.
+
+	```js
+	/**
+	 * notes 테이블에서 uuid가 일치하는 데이터를 가져오는 SELECT 함수
+	 * @param {string} uuid - 원하는 note의 uuid
+	 * @returns {Array<{ uuid: string, title: string, contents: string, created: string }>}
+	 */
+	async function getNote(uuid) {
+	  const client = await pool.connect();
+	  const res = await client.query(`SELECT * FROM notes WHERE uuid='${uuid}'`);
+	  console.log(res.rows);
+	  client.release();
+	  return res.rows;
+	}
+
+	await getNote('6dff6f2f-72e4-4185-befc-e930f137d589');
+ 	```
+
+	- 다음과 같이 결과를 잘 가져오는 것을 확인할 수 있다.
+
+ 		<img width="40%" alt="image" src="https://github.com/user-attachments/assets/b4da099d-1873-4e91-88d6-f9e2192d5447" />
+ 
+<br />
+
+### INSERT 함수 만들기
+
+- notes 테이블에 데이터를 추가하는 INSERT 함수를 설계한다.
+
+	```js
+	/**
+	 * notes 테이블에 데이터를 추가하는 INSERT 함수
+	 * @param {string} title - 새로 추가할 note의 제목
+	 * @param {string} contents - 새로 추가할 note의 내용
+	 */
+	async function addNote(title, contents) {
+	  const client = await pool.connect();
+	  const res = await client.query(
+	    `INSERT INTO notes (title, contents) VALUES('${title}', '${contents}')`
+	  );
+	  console.log(res.rows);
+	  client.release();
+	}
+	
+	await addNote('title3', 'content3');
+ 	```
+
+	- `getNotes` 함수를 이용해 데이터를 조회해보면 데이터가 잘 추가된 것을 확인할 수 있다.
+
+		<img width="40%" alt="image" src="https://github.com/user-attachments/assets/fdb115f8-b8ab-4406-9fc9-3ec7809a7b30" />
+
+<br />
+
+### UPDATE 함수 만들기
+
+- notes 테이블에 있는 데이터를 수정하는 UPDATE 함수를 설계한다.
+
+  ```js
+	/**
+	 * notes 테이블에서 uuid가 일치하는 데이터를 수정하는 UPDATE 함수
+	 * @param {string} uuid - 변경하고자 하는 note의 uuid
+	 * @param {string} title - note의 변경될 제목
+	 * @param {string} contents - note의 변경될 내용
+	 */
+	async function updateNote(uuid, title, contents) {
+	  const client = await pool.connect();
+	  const res = await client.query(
+	    `UPDATE notes SET title='${title}',contents='${contents}' WHERE uuid='${uuid}'`
+	  );
+	  console.log(res.rows);
+	  client.release();
+	}
+	
+	await updateNote(
+	  '89e7e683-b526-4516-b930-d626d737b4bd',
+	  'title3',
+	  'content3 - updated'
+	);
+  ```
+
+	- `getNotes` 함수를 이용해 데이터를 조회해보면 데이터가 잘 수정된 것을 확인할 수 있다.
+
+		<img width="40%" alt="image" src="https://github.com/user-attachments/assets/5871f99f-6ec2-4f32-b956-b2f68c09b72f" />
+		
+<br />
+
+### DELETE 함수 만들기
+
+- notes 테이블에 있는 데이터를 삭제하는 DELETE 함수를 설계한다.
+
+	```js
+	/**
+	 * notes 테이블에서 uuid가 일치하는 데이터를 삭제하는 DELETE 함수
+	 * @param {string} uuid - 삭제하고자 하는 note의 uuid 
+	 */
+	async function deleteNote(uuid) {
+	  const client = await pool.connect();
+	  const res = await client.query(
+	    `DELETE FROM notes WHERE uuid='${uuid}'`
+	  );
+	  console.log(res.rows);
+	  client.release();
+	}
+	
+	await deleteNote('0e719215-9c4e-4ef0-b694-469f44a8f037');
+ 	```
+
+ 	- `getNotes` 함수를 이용해 데이터를 조회해보면 데이터가 잘 삭제된 것을 확인할 수 있다.
+
+		<img width="326" alt="image" src="https://github.com/user-attachments/assets/18c2ce16-ac85-49a7-a2e9-78335aade464" />
+
+ 
+<br />
 
 ## :book: 참고
 
