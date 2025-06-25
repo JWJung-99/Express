@@ -15,10 +15,9 @@ const pool = new Pool({
  * notes 테이블에 있는 모든 데이터를 가져오는 SELECT 함수
  * @returns {Array<{ uuid: string, title: string, contents: string, created: string }>}
  */
-async function getNotes() {
+export async function getNotes() {
 	const client = await pool.connect();
 	const res = await client.query(`SELECT * FROM notes`);
-	console.log(res.rows);
 	client.release();
 	return res.rows;
 }
@@ -30,10 +29,9 @@ async function getNotes() {
  * @param {string} uuid - 원하는 note의 uuid
  * @returns {Array<{ uuid: string, title: string, contents: string, created: string }>}
  */
-async function getNote(uuid) {
+export async function getNote(uuid) {
 	const client = await pool.connect();
 	const res = await client.query(`SELECT * FROM notes WHERE uuid='${uuid}'`);
-	console.log(res.rows);
 	client.release();
 	return res.rows;
 }
@@ -45,12 +43,11 @@ async function getNote(uuid) {
  * @param {string} title - 새로 추가할 note의 제목
  * @param {string} contents - 새로 추가할 note의 내용
  */
-async function addNote(title, contents) {
+export async function addNote(title, contents) {
 	const client = await pool.connect();
 	const res = await client.query(
 		`INSERT INTO notes (title, contents) VALUES('${title}', '${contents}')`
 	);
-	console.log(res.rows);
 	client.release();
 }
 
@@ -62,12 +59,11 @@ async function addNote(title, contents) {
  * @param {string} title - note의 변경될 제목
  * @param {string} contents - note의 변경될 내용
  */
-async function updateNote(uuid, title, contents) {
+export async function updateNote(uuid, title, contents) {
 	const client = await pool.connect();
 	const res = await client.query(
 		`UPDATE notes SET title='${title}',contents='${contents}' WHERE uuid='${uuid}'`
 	);
-	console.log(res.rows);
 	client.release();
 }
 
@@ -81,13 +77,10 @@ async function updateNote(uuid, title, contents) {
  * notes 테이블에서 uuid가 일치하는 데이터를 삭제하는 DELETE 함수
  * @param {string} uuid - 삭제하고자 하는 note의 uuid
  */
-async function deleteNote(uuid) {
+export async function deleteNote(uuid) {
 	const client = await pool.connect();
 	const res = await client.query(`DELETE FROM notes WHERE uuid='${uuid}'`);
-	console.log(res.rows);
 	client.release();
 }
 
 // await deleteNote('0e719215-9c4e-4ef0-b694-469f44a8f037');
-
-await getNotes();
