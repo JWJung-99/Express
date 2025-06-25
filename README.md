@@ -16,6 +16,7 @@
 10. [AWS RDS PostgreSQL 연결](#keycap_ten-aws-rds-postgresql-연결)
 11. [PostgreSQL 데이터베이스 연결](#oneone-postgresql-데이터베이스-연결)
 12. [PostgreSQL+Express](#onetwo-postgresql-express-연동)
+13. [MongoDB 데이터베이스 연결](#onethree-mongodb-데이터베이스-연결)
 
 [참고](#book-참고)
 
@@ -1753,6 +1754,92 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
     |**DELETE 요청 결과**|**GET 요청 결과**|
     |:---:|:---:|
     |<img alt="image" src="https://github.com/user-attachments/assets/9abce50a-63e6-4fe0-b718-c0104b3117b4" />|<img  alt="image" src="https://github.com/user-attachments/assets/8b249e2f-671d-4988-8e1d-6c328eb930b6" />|
+
+<br />
+
+## :one::three: MongoDB 데이터베이스 연결
+
+### MongoDB 프로젝트 설정
+
+- MongoDB에 로그인한 후 Organization > Projects 탭에서 새로운 프로젝트를 생성한다.
+
+  <img width="50%" alt="image" src="https://github.com/user-attachments/assets/3e3fc1c3-047d-4a4f-bc83-e58ce2dcd221" />
+
+- 프리티어로 데이터베이스를 생성한다.
+
+	<img width="50%" alt="image" src="https://github.com/user-attachments/assets/b312817b-cef3-4b54-a63c-e89e09d11515" />
+
+- 생성한 데이터베이스에 Driver 방식으로 연결한다.
+
+	<img width="50%" alt="image" src="https://github.com/user-attachments/assets/5d12fd07-63c9-43fb-951e-065322da607a" />
+
+- 네트워크 IP를 설정한다. 정해진 EC2에서만 접속을 허용하려면 EC2의 IP 주소를 입력하면 되고, 외부에서 접근을 허용하려면 다음과 같이 Access from Anywhere로 설정한다.
+
+	<img width="50%" alt="image" src="https://github.com/user-attachments/assets/b7f647a0-b9d0-47f0-b65d-2e9a3bfdaeda" />
+
+- MongoDB는 collections라는 이름으로 데이터베이스 테이블을 생성한다. Clusters > Collections 탭에서 notes라는 새로운 collection을 생성한다.
+
+	<img width="50%" alt="image" src="https://github.com/user-attachments/assets/e242cd78-42c8-41aa-ad04-e2615f3a9d3d" />
+
+<br />
+
+### MongoDB 실행 환경 구성
+
+- 프로젝트에서 `mongodb` 패키지를 설치한다.
+
+	```bash
+ 	npm install mongodb
+ 	```
+ 
+- MongoDB 공식문서에서 제공하는 connection code를 복사하여 적용하고 비밀번호를 변경한다.
+
+	<img width="50%" alt="image" src="https://github.com/user-attachments/assets/4b204a7d-a0c1-4d3b-a239-fa41a4bddf7d" />
+
+- 다음과 같이 MongoDB 데이터베이스에 성공적으로 접속한 것을 확인할 수 있다.
+
+	<img width="40%" alt="image" src="https://github.com/user-attachments/assets/79864c12-1f73-4600-9095-4b77741651da" />
+
+- MongoDB 공식문서의 [가이드](https://www.mongodb.com/ko-kr/docs/manual/core/databases-and-collections/#create-a-database)에 따라 `db_test` 데이터베이스의 `notes` 컬렉션에 데이터 추가를 테스트한다.
+
+	```js
+	async function run() {
+	  try {
+	    // Connect the client to the server	(optional starting in v4.7)
+	    await client.connect();
+	    // Send a ping to confirm a successful connection
+	    const db = client.db("db_test");
+	    const collection = db.collection("notes");
+	    await collection.insertOne({title: "title1", contents: "contents1"})
+	    console.log(
+	      'Pinged your deployment. You successfully connected to MongoDB!'
+	    );
+	  } finally {
+	    // Ensures that the client will close when you finish/error
+	    await client.close();
+	  }
+	}
+	run().catch(console.dir);
+ 	```
+
+ 	- 다음과 같이 컬렉션에 데이터가 잘 추가된 것을 확인할 수 있다.
+
+		<img width="50%" alt="image" src="https://github.com/user-attachments/assets/7986de99-9fb9-4405-90f6-c669b9f8a421" />
+
+<br />
+
+### INSERT 함수
+
+<br />
+
+### SELECT 함수
+
+<br />
+
+### UPDATE 함수
+
+<br />
+
+### DELETE 함수
 
 <br />
 
