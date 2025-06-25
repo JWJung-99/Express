@@ -1827,19 +1827,160 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
 <br />
 
+> **MongoDB Quick Reference**
+> 
+> [MongoDB Docs](https://www.mongodb.com/docs/drivers/node/current/reference/quick-reference/)
+
+<br />
+
 ### INSERT 함수
+
+- notes 테이블에 데이터를 추가하는 INSERT 함수를 설계한다.
+
+  ```js
+  async function addNote(title, contents) {
+    await collection.insertOne({
+      title,
+      contents,
+      created: new Date(),
+    });
+  }
+  
+  await addNote('title1', 'content1');
+  ```
+
+  - 데이터베이스를 확인해보면 데이터가 잘 추가된 것을 볼 수 있다.
+
+    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/8a2db6f5-f26c-433b-ab22-028ecacc6318" />
 
 <br />
 
 ### SELECT 함수
 
+- notes 테이블에서 데이터를 **조건 없이** 검색하는 SELECT 함수를 설계한다.
+
+  - 조건 없이 여러 개의 데이터를 가져올 때는 **`find` 메서드를 실행한 값을 `cursor`라는 변수에 담아 이를 배열 형태로 반환**한다.
+
+  ```js
+  /**
+   * notes에 저장된 데이터를 조회하는 SELECT 함수
+   * @returns {Array<{ _id: object, title: string, contents: string, created: object }>}
+   */
+  async function getNotes() {
+    const cursor = collection.find();
+    const result = await cursor.toArray();
+  
+    console.log(result);
+  
+    return result;
+  }
+  
+  await getNotes();
+  ```
+
+  <img width="40%" alt="image" src="https://github.com/user-attachments/assets/deaf16c9-bdca-4377-a84e-02fd737d05e8" />
+
+  - 하지만 `_id` 값이 `string`이 아닌 `object` 타입인 것을 확인할 수 있다. 이 문제를 해결하기 위해 `find`의 매개변수로 projection document를 전달해 원하는 `field`를 선택하거나 원하는 형태로 변경할 수 있다. ([공식문서](https://www.mongodb.com/docs/manual/reference/method/db.collection.find/#std-label-find-projection))
+
+    ```js
+    const cursor = collection.find(
+  	  {},
+  	  {
+  	    projection: {
+  	      _id: { $toString: '$_id' },
+  	      title: 1,
+  	      contents: 1,
+  	      created: 1,
+  	    },
+      }
+  	);
+    ```
+
+  - 최종 검색 결과는 다음과 같다.
+    
+    <img width="40%" alt="image" src="https://github.com/user-attachments/assets/6cd3a6c4-585c-44fa-a9e0-6191ea59a044" />
+
+<br />
+
+- notes 테이블에서 해당 `id`값을 가진 데이터를 검색하는 SELECT 함수를 설계한다. `find` 메서드의 첫 번째 인수로 검색 조건을 전달하고, `_id` 값을 `string` 형태로 응답받기 위해 위와 마찬가지로 projection document를 전달한다.
+
+  ```js
+  /**
+   * notes에서 특정 id 값을 갖는 데이터를 검색하는 SELECT 함수
+   * @param {string} id - notes에서 찾고자 하는 데이터의 id
+   * @returns {Array<{ _id: string, title: string, contents: string, created: object }>}
+   */
+  async function getNote(id) {
+    const result = await collection.findOne(
+      { _id: new ObjectId(id) },
+      {
+        projection: {
+          _id: { $toString: '$_id' },
+          title: 1,
+          contents: 1,
+          created: 1,
+        },
+      }
+    );
+    console.log(result);
+    return result;
+  }
+  
+  await getNote('685c07c2f2bf41a1da48235a');
+  ```
+
+  - 검색 결과는 다음과 같다.
+
+    <img width="40%" alt="image" src="https://github.com/user-attachments/assets/8b368ecd-99c9-4d1b-8458-70e4249f5c61" />
+
 <br />
 
 ### UPDATE 함수
 
+- notes 테이블에서 특정 `id` 값을 가진 데이터를 찾아 값을 변경하는 UPDATE 함수를 설계한다. `updateOne` 메서드의 첫 번째 인수로 조건을 전달하고, 두 번째 인수로 변경할 데이터를 `$set` 프로퍼티의 값으로 전달한다.
+
+  ```js
+  /**
+   * notes에서 특정 id 값을 갖는 note의 데이터를 변경하는 UPDATE 함수
+   * @param {string} id - 변경할 note의 id
+   * @param {string} title - 변경할 note의 제목
+   * @param {string} contents - 변경할 note의 내용
+   */
+  async function updateNote(id, title, contents) {
+    await collection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { title: title, contents: contents } }
+    );
+  }
+  
+  await updateNote('685c07c2f2bf41a1da48235a', 'title1', 'content1 - updated');
+  ```
+
+  - 데이터베이스를 확인해보면 다음과 같이 값이 잘 변경된 것을 확인할 수 있다.
+
+    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/08a67be6-79f3-4e55-bf3b-724cb6c910ef" />
+
 <br />
 
 ### DELETE 함수
+
+- notes 테이블에서 특정 `id` 값을 가진 데이터를 삭제하는 DELETE 함수를 설계한다.
+
+  ```js
+  /**
+   * notes에서 특정 id 값을 갖는 note를 삭제하는 DELETE 함수
+   * @param {string} id - 삭제할 note의 id
+   */
+  async function deleteNote(id) {
+    await collection.deleteOne({ _id: new ObjectId(id) });
+  }
+  
+  await deleteNote('685c14819c9f271a6c91a5b4');
+  ```
+
+  - 데이터베이스를 확인해보면 다음과 같이 값이 삭제된 것을 확인할 수 있다.
+
+    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/f7552936-8f81-42af-93c4-81dea6f68f6a" />
 
 <br />
 
