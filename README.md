@@ -1616,18 +1616,17 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
 - `GET` `/notes`
 
-	- notes 테이블의 모든 데이터를 받아오는 GET 메서드를 작성한다.
-
-		```js
-		app.get('/notes', async (req, res) => {
-		  const notes = await getNotes();
-		  res.send(notes);
-		});
-  	```
-
- - `http://localhost:3000/notes`로 접속하면 데이터를 잘 받아올 수 있다.
-
-	 <img width="50%" alt="image" src="https://github.com/user-attachments/assets/d42e276d-2c4f-4eb9-85db-1b6642c346ab" />
+  - notes 테이블의 모든 데이터를 받아오는 GET 메서드를 작성한다.
+    ```js
+    app.get('/notes', async (req, res) => {
+      const notes = await getNotes();
+      res.send(notes);
+    });
+    ```
+    
+	- `http://localhost:3000/notes`로 접속하면 데이터를 잘 받아올 수 있다.
+ 
+ 		<img width="50%" alt="image" src="https://github.com/user-attachments/assets/d42e276d-2c4f-4eb9-85db-1b6642c346ab" />
 
 <br />
 
@@ -1640,21 +1639,21 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
 		```js
 		app.get('/note/:uuid', async (req, res) => {
-		  const uuid = req.params.uuid;
-
-		  if (!uuid || uuid.length !== 36) {
-		    const error = new Error('No / Wrong parameter');
-		    error.status = 400;
-		    throw error;
-		  }
+			const uuid = req.params.uuid;
 		
-		  const note = await getNote(uuid);
+			if (!uuid || uuid.length !== 36) {
+				const error = new Error('No / Wrong parameter');
+				error.status = 400;
+				throw error;
+			}
 		
-		  if (note.length === 0) res.send({});
+			const note = await getNote(uuid);
 		
-		  res.send(note[0]);
+			if (note.length === 0) res.send({});
+		
+			res.send(note[0]);
 		});
-  	```
+		```
 
  - `http://localhost:3000/note/89e7e683-b526-4516-b930-d626d737b4bd`로 접속하면 데이터를 잘 받아올 수 있다.
 
@@ -1723,7 +1722,7 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
   - `http://localhost:3000/note/:uuid`로 PUT 요청을 보내면 데이터가 잘 저장된 것을 확인할 수 있다.
 
-    <img width="1249" alt="image" src="https://github.com/user-attachments/assets/c8f5cca3-353e-4c7e-b693-839389d6ba61" />
+    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/c8f5cca3-353e-4c7e-b693-839389d6ba61" />
 
 
 <br />
@@ -1753,7 +1752,7 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
     |**DELETE 요청 결과**|**GET 요청 결과**|
     |:---:|:---:|
-    |<img alt="image" src="https://github.com/user-attachments/assets/9abce50a-63e6-4fe0-b718-c0104b3117b4" />|<img width="1249" alt="image" src="https://github.com/user-attachments/assets/8b249e2f-671d-4988-8e1d-6c328eb930b6" />|
+    |<img alt="image" src="https://github.com/user-attachments/assets/9abce50a-63e6-4fe0-b718-c0104b3117b4" />|<img  alt="image" src="https://github.com/user-attachments/assets/8b249e2f-671d-4988-8e1d-6c328eb930b6" />|
 
 <br />
 
