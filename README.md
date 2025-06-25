@@ -15,6 +15,7 @@
 9. [MySQL+Express](#nine-mysql-express-연동)
 10. [AWS RDS PostgreSQL 연결](#keycap_ten-aws-rds-postgresql-연결)
 11. [PostgreSQL 데이터베이스 연결](#oneone-postgresql-데이터베이스-연결)
+12. [PostgreSQL+Express](#onetwo-postgresql-express-연동)
 
 [참고](#book-참고)
 
@@ -1607,7 +1608,153 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
 		<img width="326" alt="image" src="https://github.com/user-attachments/assets/18c2ce16-ac85-49a7-a2e9-78335aade464" />
 
- 
+<br />
+
+## :one::two: PostgreSQL Express 연동
+
+### HTTP GET
+
+- `GET` `/notes`
+
+	- notes 테이블의 모든 데이터를 받아오는 GET 메서드를 작성한다.
+
+		```js
+		app.get('/notes', async (req, res) => {
+		  const notes = await getNotes();
+		  res.send(notes);
+		});
+  	```
+
+ - `http://localhost:3000/notes`로 접속하면 데이터를 잘 받아올 수 있다.
+
+	 <img width="50%" alt="image" src="https://github.com/user-attachments/assets/d42e276d-2c4f-4eb9-85db-1b6642c346ab" />
+
+<br />
+
+- `GET` `/note/:uuid`
+
+	- notes 테이블에서 `uuid`가 일치하는 데이터를 받아오는 GET 메서드를 작성한다.
+
+	  - `uuid`가 없거나 `uuid`의 형식이 적절하지 않을 경우 에러를 발생시킨다.
+   	- 조회된 데이터가 없다면 빈 객체(`{}`)를 응답한다.
+
+		```js
+		app.get('/note/:uuid', async (req, res) => {
+		  const uuid = req.params.uuid;
+
+		  if (!uuid || uuid.length !== 36) {
+		    const error = new Error('No / Wrong parameter');
+		    error.status = 400;
+		    throw error;
+		  }
+		
+		  const note = await getNote(uuid);
+		
+		  if (note.length === 0) res.send({});
+		
+		  res.send(note[0]);
+		});
+  	```
+
+ - `http://localhost:3000/note/89e7e683-b526-4516-b930-d626d737b4bd`로 접속하면 데이터를 잘 받아올 수 있다.
+
+   <img width="50%" alt="image" src="https://github.com/user-attachments/assets/e24e6e9d-e275-42f4-8c20-63c56609dbb7" />
+
+<br />
+
+### HTTP POST
+
+- `POST` `/note`
+
+  - notes 테이블에 데이터를 추가하는 POST 메서드를 작성한다.
+
+    ```js
+    app.post('/note', async (req, res) => {
+      const { title, contents } = req.body;
+    
+      if (!title || !contents) {
+        const error = new Error('No required data');
+        error.status = 400;
+        throw error;
+      }
+    
+      await addNote(title, contents);
+      res.sendStatus(201);
+    });
+    ```
+
+  - `http://localhost:3000/note`로 POST 요청을 보낸 후 GET 요청을 통해 확인하면 데이터가 잘 저장된 것을 확인할 수 있다.
+
+    |**POST 요청 결과**|**GET 요청 결과**|
+    |:---:|:---:|
+    |<img alt="image" src="https://github.com/user-attachments/assets/fcd35a9d-0bed-4bc6-99b0-fe8532a80332" />|<img alt="image" src="https://github.com/user-attachments/assets/d8eb972c-e9c5-4110-bcf0-7f2e7437c596" />|
+
+<br />
+
+### HTTP PUT
+
+- `PUT` `/note/:uuid`
+
+  - notes 테이블에서 `uuid`가 일치하는 데이터를 수정하는 PUT 메서드를 작성한다. 이번에는 성공적으로 PUT 요청을 처리하면 업데이트 된 데이터를 받아오는 코드도 추가한다.
+
+    ```js
+    app.put('/note/:uuid', async (req, res) => {
+      const uuid = req.params.uuid;
+      const { title, contents } = req.body;
+    
+      if (!uuid || uuid.length !== 36) {
+        const error = new Error('No / Wrong parameter');
+        error.status = 400;
+        throw error;
+      }
+    
+      if (!title || !contents) {
+        const error = new Error('No required data');
+        error.status = 400;
+        throw error;
+    	}
+    
+      await updateNote(uuid, title, contents);
+
+      const updatedNote = await getNote(uuid);
+      res.send(updatedNote);
+    });
+    ```
+
+  - `http://localhost:3000/note/:uuid`로 PUT 요청을 보내면 데이터가 잘 저장된 것을 확인할 수 있다.
+
+    <img width="1249" alt="image" src="https://github.com/user-attachments/assets/c8f5cca3-353e-4c7e-b693-839389d6ba61" />
+
+
+<br />
+
+### HTTP DELETE
+
+- `DELETE` `/note/:uuid`
+
+  - notes 테이블에서 `uuid`가 일치하는 데이터를 삭제하는 DELETE 메서드를 작성한다.
+
+    ```js
+    app.delete('/note/:uuid', async (req, res) => {
+      const uuid = req.params.uuid;
+    
+      if (!uuid || uuid.length !== 36) {
+        const error = new Error('No / Wrong parameter');
+        error.status = 400;
+        throw error;
+      }
+    
+      await deleteNote(uuid);
+      res.sendStatus(204);
+    });
+    ```
+
+  - `http://localhost:3000/note/:uuid`로 DELETE 요청을 보낸 후 GET 요청을 통해 확인하면 데이터가 잘 저장된 것을 확인할 수 있다.
+
+    |**DELETE 요청 결과**|**GET 요청 결과**|
+    |:---:|:---:|
+    |<img alt="image" src="https://github.com/user-attachments/assets/9abce50a-63e6-4fe0-b718-c0104b3117b4" />|<img width="1249" alt="image" src="https://github.com/user-attachments/assets/8b249e2f-671d-4988-8e1d-6c328eb930b6" />|
+
 <br />
 
 ## :book: 참고
