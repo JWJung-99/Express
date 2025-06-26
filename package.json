@@ -10,7 +10,7 @@
 		"mysql": "nodemon ./mysql/index.js",
 		"server": "nodemon ./server/index.js",
 		"post": "nodemon ./postgresql/index.js",
-		"mongo": "nodemon ./mongodb/db/database.js",
+		"mongo": "nodemon ./mongodb/index.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"keywords": [],
