@@ -2210,6 +2210,79 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 	|:---:|:---:|
 	|<img alt="image" src="https://github.com/user-attachments/assets/b59597f9-d6a7-4741-8fde-d111ac196cc4" />|<img alt="image" src="https://github.com/user-attachments/assets/e6ceb1d0-22bb-4635-b544-38108aa4a567" />|
 
+- 다음으로, 사용자가 request의 headers에 담아 보내는 `Authorization` 값을 추출한다.
+
+	- 사용자가 `headers`의 `Authorization` 프로퍼티에 `Basic <base64 encoding 값>`을 담아 보내면 `req.headers` 객체는 아래와 같은 값을 가진다.
+
+		<img width="40%" alt="image" src="https://github.com/user-attachments/assets/c71c068d-a1e2-4b1e-9c61-eec1bc591bb0" />
+
+	- `req.headers`의 `authorization` 값을 이용해 base64 디코딩된 값을 추출하고, 이를 이용해 데이터를 조회하는 코드를 작성한다.
+
+ 		```js
+		const auth = req.headers.authorization;
+		console.log(auth);
+	
+		if (!auth) {
+		  res.sendStatus(401);
+		  return;
+		}
+	
+		const value = auth.split(' ')[1];
+		```
+
+	- 다음과 같이 `id`와 `password`가 일치할 때는 데이터를 잘 가져오고, 일치하지 않다면 `Unauthorized` 에러가 발생한다.
+	
+		|**`id`, `password` 일치**|**`id`, `password` 불일치**|
+		|:---:|:---:|
+		|<img alt="image" src="https://github.com/user-attachments/assets/d6cb37cf-bece-48d1-930b-9a954b2b95e4" />|<img alt="image" src="https://github.com/user-attachments/assets/a016f803-d1f6-483a-9acd-aed8d9f9a46e" />| 
+
+<br />
+
+### 미들웨어로 분리
+
+- 지금까지 진행한 `authorization` 값 추출, base64 디코딩의 과정을 Authorization이 필요한 모든 api에서 반드시 거쳐갈 수 있도록 미들웨어를 설계한다.
+
+	```js
+	function authorization(req, res, next) {
+	  const auth = req.headers.authorization;
+	
+	  if (!auth) {
+	    res.sendStatus(401);
+	    return;
+	  }
+	
+	  const value = auth.split(' ')[1];
+	
+	  // base64 decoding
+	  const decodedValue = Buffer.from(value, 'base64').toString('utf8');
+	  const [id, password] = decodedValue.split(':');
+	
+	  // user를 조회했다고 가정
+	  const user = users[0];
+	
+	  if (id !== user.id || password !== user.password) {
+	    res.sendStatus(401);
+	    return;
+	  }
+	
+	  next();
+	}
+ 	```
+
+- API 요청 과정에서 두 번째 인자로 해당 미들웨어를 전달한다.
+
+	```js
+	app.get('/notes', authorization, (req, res) => {
+	  const note = notes[0];
+	
+	  res.send(note);
+	});
+ 	```
+
+- 미들웨어 추가 후 해당 요청을 보낼 때 `id`, `password`를 보내지 않으면 `Unauthorized`로 데이터를 받아 올 수 없다.
+
+	<img width="50%" alt="image" src="https://github.com/user-attachments/assets/092fe45d-a79c-4570-a287-b556f27e423a" />
+
 <br />
 
 ## :book: 참고
