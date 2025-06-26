@@ -17,6 +17,7 @@
 11. [PostgreSQL 데이터베이스 연결](#oneone-postgresql-데이터베이스-연결)
 12. [PostgreSQL+Express](#onetwo-postgresql-express-연동)
 13. [MongoDB 데이터베이스 연결](#onethree-mongodb-데이터베이스-연결)
+14. [MongoDB+Express](#onefour-mongodb-express-연동)
 
 [참고](#book-참고)
 
@@ -1982,6 +1983,174 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
     <img width="50%" alt="image" src="https://github.com/user-attachments/assets/23e64872-4cef-4424-b523-6a19c194591c" />
 
+<br />
+
+## :one::four: MongoDB Express 연동
+
+### HTTP GET
+
+- `GET` `/notes`
+
+  ```js
+	app.get('/notes', async (req, res, next) => {
+	  const result = await getNotes();
+	
+	  res.send(result);
+	});
+  ```
+
+	- `http://localhost:3000/notes`로 접속하면 데이터를 조회할 수 있다.
+
+		<img width="50%" alt="image" src="https://github.com/user-attachments/assets/662c7a19-5886-4615-9652-0b90d2c4af92" />
+
+<br />
+
+- `GET` `/note/:id`
+
+  ```js
+	app.get('/note/:id', async (req, res, next) => {
+	  try {
+	    const id = req.params.id;
+	
+	    if (!id) {
+	      const error = new Error('No Required Parameter');
+	      error.status = 400;
+	      throw error;
+	    }
+	
+	    if (id.length !== 24) {
+	      const error = new Error('Wrong Parameter');
+	      error.status = 400;
+	      throw error;
+	    }
+	
+	    const result = await getNote(id);
+	
+	    if (result.length === 0) res.send({});
+	    res.send(result);
+	  } catch (err) {
+	    next(err);
+	  }
+	});
+  ```
+
+	- `http://localhost:3000/note/:id`로 접속하면 해당 `id`를 가진 데이터를 조회할 수 있다.
+
+		<img width="50%" alt="image" src="https://github.com/user-attachments/assets/9222638c-2f3e-4876-80db-230d3724e437" />
+
+<br />
+
+### HTTP POST
+
+- `POST` `/note`
+
+  ```js
+	app.post('/note', async (req, res, next) => {
+	  try {
+	    const { title, contents } = req.body;
+	
+	    if (!title || !contents) {
+	      const error = new Error('No Required Data');
+		    error.status = 400;
+		    throw error;
+	    }
+	
+	    await addNote(title, contents);
+	    res.sendStatus(201);
+	  } catch (err) {
+	    next(err);
+	  }
+	});
+  ```
+
+	- `http://localhost:3000/note`로 요청을 보내면 데이터를 추가할 수 있다.
+
+		|**POST 요쳥**|**데이터베이스 조회**|
+		|:---:|:---:|
+		|<img alt="image" src="https://github.com/user-attachments/assets/eeddc67c-f499-4cbc-8d1e-8daf4059aa5d" />|<img alt="image" src="https://github.com/user-attachments/assets/2bc9e9b2-08d1-4588-a4c1-c6dc4ff3b8b6" />|
+
+<br />
+
+### HTTP PUT
+
+- `PUT` `/note/:id`
+
+  ```js
+	app.put('/note/:id', async (req, res, next) => {
+	  try {
+		  const id = req.params.id;
+		  const { title, contents } = req.body;
+	
+		  if (!id) {
+	      const error = new Error('No Required Parameter');
+	      error.status(400);
+	      throw error;
+	    }
+	
+	    if (id.length !== 24) {
+	      const error = new Error('Wrong Parameter');
+	      error.status(400);
+	      throw error;
+	    }
+	
+	    if (!title && !contents) {
+	      const error = new Error('No Required Data');
+	      error.status(400);
+	      throw error;
+	    }
+	
+	    await updateNote(id, title, contents);
+	    res.sendStatus(204);
+	  } catch (err) {
+	    next(err);
+	  }
+	});
+  ```
+
+	- `http://localhost:3000/note/:id`로 요청을 보내면 데이터를 수정할 수 있다.
+
+		|**PUT 요쳥**|**데이터베이스 조회**|
+		|:---:|:---:|
+		|<img alt="image" src="https://github.com/user-attachments/assets/eb904178-868b-4405-a3b6-08784751c7ca" />|<img alt="image" src="https://github.com/user-attachments/assets/14405662-38a9-4939-9ab4-62923fcc0aa6" />|
+
+<br />
+
+### HTTP DELETE
+
+- `DELETE` `/note/:id`
+
+  ```js
+	app.delete('/note/:id', async (req, res, next) => {
+	  try {
+	    const id = req.params.id;
+	
+	    if (!id) {
+	      const error = new Error('No Required Parameter');
+	      error.status(400);
+	      throw error;
+	    }
+	
+	    if (id.length !== 24) {
+	      const error = new Error('Wrong Parameter');
+	      error.status(400);
+		    throw error;
+	    }
+	
+	    await deleteNote(id);
+	    res.sendStatus(204);
+	  } catch (err) {
+      next(err);
+	  }
+	});
+  ```
+
+	- `http://localhost:3000/note/:id`로 요청을 보내면 데이터를 삭제할 수 있다.
+
+		|**DELETE 요쳥**|**데이터베이스 조회**|
+		|:---:|:---:|
+		|<img width="50%" alt="image" src="https://github.com/user-attachments/assets/c220e246-81c8-42d9-82d8-7395372bf063" />
+|<img alt="image" src="https://github.com/user-attachments/assets/4c7e2b31-bdcd-456c-8a89-4803aa214e0c" />|
+	
 <br />
 
 ## :book: 참고
