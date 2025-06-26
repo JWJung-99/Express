@@ -20,7 +20,7 @@ const collection = db.collection('notes');
  * notes에 저장된 데이터를 조회하는 SELECT 함수
  * @returns {Array<{ _id: string, title: string, contents: string, created: object }>}
  */
-async function getNotes() {
+export async function getNotes() {
 	const cursor = collection.find(
 		{},
 		{
@@ -46,7 +46,7 @@ async function getNotes() {
  * @param {string} id - notes에서 찾고자 하는 데이터의 id
  * @returns {Array<{ _id: string, title: string, contents: string, created: object }>}
  */
-async function getNote(id) {
+export async function getNote(id) {
 	const result = await collection.findOne(
 		{ _id: new ObjectId(id) },
 		{
@@ -69,7 +69,7 @@ async function getNote(id) {
  * @param {string} title - 새로 추가할 note의 제목
  * @param {string} contents - 새로 추가할 note의 내용
  */
-async function addNote(title, contents) {
+export async function addNote(title, contents) {
 	await collection.insertOne({
 		title,
 		contents,
@@ -85,7 +85,7 @@ async function addNote(title, contents) {
  * @param {string} title - 변경할 note의 제목
  * @param {string} contents - 변경할 note의 내용
  */
-async function updateNote(id, title, contents) {
+export async function updateNote(id, title, contents) {
 	await collection.updateOne(
 		{ _id: new ObjectId(id) },
 		{ $set: { title: title, contents: contents } }
@@ -98,7 +98,7 @@ async function updateNote(id, title, contents) {
  * notes에서 특정 id 값을 갖는 note를 삭제하는 DELETE 함수
  * @param {string} id - 삭제할 note의 id
  */
-async function deleteNote(id) {
+export async function deleteNote(id) {
 	await collection.deleteOne({ _id: new ObjectId(id) });
 }
 
