@@ -2285,6 +2285,110 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
 <br />
 
+### HTTP Authentication - Bearer JWT
+
+- Bearer 방식을 사용하면 다음의 과정을 거친다.
+
+	- 사용자의 `id`와 `pw`를 검증해 `token`을 생성하고, 사용자가 api 요청을 보낼 때 헤더에 `Bearer <token>`을 담아 보낸다는 차이점이 있다.
+
+	<img width="50%" alt="image" src="https://github.com/user-attachments/assets/4331136e-3955-4125-82a9-bcba59413edd" />
+
+- `token`을 생성하는 API를 설계한다.
+
+	- 먼저 `token` 생성을 위해 **`jsonwebtoken`이라는 패키지를 설치**한다. 사용 방법 역시 [공식문서](https://www.npmjs.com/package/jsonwebtoken)에 잘 나와 있다.
+
+		```bash
+		npm install jsonwebtoken
+		```
+
+	- 사용자의 `id`와 `pw`를 입력받아 `token`을 생성해야 하므로 POST 요청을 설계한다.
+	
+		```js
+		import jwt from 'jsonwebtoken';
+		
+		app.post('/token', (req, res, next) => {
+		  try {
+		    const { id, password } = req.body;
+		    const user = users[0];
+		
+		    if (id !== user.id) {
+		      const error = new Error('존재하지 않는 아이디입니다.');
+		      error.status = 401;
+		      throw error;
+		    }
+		
+		    if (password !== user.password) {
+		      const error = new Error('비밀번호를 확인해주세요.');
+		      error.status = 401;
+		      throw error;
+		    }
+		
+		    const token = jwt.sign({ id, name: user.name }, 'secret', {
+		      expiresIn: '1h',
+		    });
+		
+		    res.send({ token });
+		  } catch (err) {
+		    next(err);
+		  }
+		});
+		```
+
+	- 다음과 같이 `token`을 잘 받아오는 것을 확인할 수 있다. `id`와 `password`가 일치하지 않는 경우 예외처리도 가능하다.
+
+		|**`id`, `password` 일치**|**`id 불일치`**|**`password` 불일치**|
+		|:---:|:---:|:---:|
+		|<img alt="image" src="https://github.com/user-attachments/assets/204685c3-70e6-4adc-9671-36826ff17f49" />|<img alt="image" src="https://github.com/user-attachments/assets/21cacee6-85fa-4fae-9941-11564246bab7" />|<img alt="image" src="https://github.com/user-attachments/assets/114efa7a-6672-4fb3-bf38-79aea3497c48" />|
+
+<br />
+
+### `token` 검증 미들웨어
+
+- `token`을 검증하기 위한 미들웨어를 설계한다. 사용자가 헤더에 담아 전달한 `Bearer token`을 받아 검증하는 과정이 필요하다.
+
+	```js
+	function authorizationJWT(req, res, next) {
+	  const auth = req.headers.authorization;
+	
+	  if (!auth) {
+      res.sendStatus(401);
+	    return;
+	  }
+	
+	  const value = auth.split(' ')[1];
+	
+	  // Bearer 처리
+	  const decoded = jwt.verify(value, 'secret');
+	  const user = users[0];
+	
+	  if (decoded.id !== user.id) {
+	    res.sendStatus(401);
+	    return;
+	  }
+	
+	  if (decoded.name !== user.name) {
+	    res.sendStatus(401);
+	    return;
+	  }
+	
+	  next();
+	}
+ 	```
+
+- 미들웨어를 GET `/notes` 요청에 추가하면 다음과 같이 Bearer token이 검증될 때 데이터를 받아올 수 있다.
+
+	```js
+	app.get('/notes', authorizationJWT, (req, res) => {
+	  const note = notes[0];
+	
+	  res.send(note);
+	});
+ 	```
+
+	<img width="50%" alt="image" src="https://github.com/user-attachments/assets/649b8740-f0c9-4de2-bf5a-7d4cbf0bdfee" />
+
+<br />
+
 ## :book: 참고
 
 - [Express.js 공식문서](https://expressjs.com/)
