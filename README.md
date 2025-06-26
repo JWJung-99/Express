@@ -18,6 +18,7 @@
 12. [PostgreSQL+Express](#onetwo-postgresql-express-연동)
 13. [MongoDB 데이터베이스 연결](#onethree-mongodb-데이터베이스-연결)
 14. [MongoDB+Express](#onefour-mongodb-express-연동)
+15. [HTTP Authentication](#onefive-http-authentication)
 
 [참고](#book-참고)
 
@@ -2148,9 +2149,67 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
 		|**DELETE 요쳥**|**데이터베이스 조회**|
 		|:---:|:---:|
-		|<img width="50%" alt="image" src="https://github.com/user-attachments/assets/c220e246-81c8-42d9-82d8-7395372bf063" />
-|<img alt="image" src="https://github.com/user-attachments/assets/4c7e2b31-bdcd-456c-8a89-4803aa214e0c" />|
+		|<img alt="image" src="https://github.com/user-attachments/assets/c220e246-81c8-42d9-82d8-7395372bf063" />|<img alt="image" src="https://github.com/user-attachments/assets/4c7e2b31-bdcd-456c-8a89-4803aa214e0c" />|
 	
+<br />
+
+## :one::five: HTTP Authentication
+
+### HTTP Authentication - Basic
+
+<img width="50%" alt="image" src="https://www.tecracer.com/blog/img/2024/03/mdn-http-auth-sequence-diagram.png" />
+
+- [Basic](https://developer.mozilla.org/ko/docs/Web/HTTP/Guides/Authentication#basic_%EC%9D%B8%EC%A6%9D_%EC%8A%A4%ED%82%B4) 방식은 **base64를 이용하여 인코딩된 사용자 ID/비밀번호 쌍의 인증 정보를 전달**한다.
+
+	- 사용자 ID와 비밀번호(`id:pw`)가 평문으로 네트워크를 통해 전달되기 때문에, Basic 인증 스키마는 안전하지 않습니다. base64로 인코딩되어 있기는 하지만 **암호화 되지는 않았기 때문에** 복호화가 가능한 인코딩 방식이기 때문이다.
+  
+	- 따라서 HTTPS / TLS이 basic 인증과 함께 사용되어야 하며 이러한 추가적인 보안 향상 없이는 basic 인증은 민감하거나 귀중한 정보를 보호하는 데 사용되어서는 안 된다.
+
+- Basic 방식을 활용하면 다음의 과정을 거친다.
+
+	<img width="50%" alt="image" src="https://github.com/user-attachments/assets/4578cce2-680a-4d53-9fd1-0be5e86956d6" />
+
+<br />
+
+### Express에 Basic Auth 추가
+
+- 이제 Express에서 Basic Auth를 적용한다. 먼저 테스트를 위한 임시 database를 작성하고, GET 요청에 Basic authentication 로직을 추가한다.
+
+ 	- base64를 디코딩하는 과정이 필요하다. `Buffer`와 `toString`을 활용해 base64 형태의 id와 password를 디코딩한다. ([참고](https://systorage.tistory.com/entry/Nodejs-Nodejs%EC%97%90%EC%84%9C-base64%EB%A1%9C-%EB%AC%B8%EC%9E%90%EC%97%B4-Encoding-Decoding-%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95))
+
+		```js
+		const decodedHeaders = Buffer.from(headers, 'base64').toString('utf8');
+		```
+
+	- 디코딩한 `id`와 `password`를 각각의 변수에 저장한다.
+	
+		```js
+		const [id, password] = decodedHeaders.split(":");
+		```
+   
+	- 데이터베이스에 사용자가 입력한 `id`와 `password`가 있는지 확인한다.
+	
+		```js
+		const user = users[0];
+		
+		if (id !== user.id) res.sendStatus(401);
+		if (pw !== user.pw) res.sendStatus(401);
+		```
+
+	- `user`가 잘 조회되었다면 데이터를 전송하는 로직을 추가한다.
+	
+		```js
+		const note = notes[0];
+		
+		res.send(note);
+		```
+
+- 다음과 같이 `id`와 `password`가 일치할 때는 데이터를 잘 가져오고, 일치하지 않다면 `Unauthorized` 에러가 발생한다.
+
+	|**`id`, `password` 일치**|**`id`, `password` 불일치**|
+	|:---:|:---:|
+	|<img alt="image" src="https://github.com/user-attachments/assets/b59597f9-d6a7-4741-8fde-d111ac196cc4" />|<img alt="image" src="https://github.com/user-attachments/assets/e6ceb1d0-22bb-4635-b544-38108aa4a567" />|
+
 <br />
 
 ## :book: 참고
