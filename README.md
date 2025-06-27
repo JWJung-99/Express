@@ -20,6 +20,7 @@
 14. [MongoDB+Express](#onefour-mongodb-express-연동)
 15. [HTTP Authentication](#onefive-http-authentication)
 16. [AWS EC2 RDS](#onesix-aws-ec2-rds)
+17. [Nginx 대응](#oneseven-nginx-대응)
 
 [참고](#book-참고)
 
@@ -2469,6 +2470,88 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 강의 내용과 다르게 S3, CodeDeploy를 활용하여 CI, CD 환경을 구축해보고자 한다.
 
 [블로그]()
+
+<br />
+
+## :one::seven: Nginx 대응
+
+### Nginx 설치
+
+- 항상 `3000`번 포트로 접속하는 것을 피하기 위해 Nginx를 설치한다.
+
+  ```bash
+  sudo apt install nginx
+  ```
+
+- HTTP `80`번 포트로 접속해도 `3000`번 포트에 있는 내용을 보여주는 것을 **reverse proxy** 기능이라고 한다.
+
+	<img width="50%" alt="image" src="https://github.com/user-attachments/assets/645b963a-d7a9-4167-a01b-72d106bc8c5d" />
+
+<br />
+
+### Nginx 환경변수 설정
+
+- Nginx가 잘 실행되고 있는지 확인하기 위해 `status`를 조회할 수 있다.
+
+  ```bash
+  sudo service nginx status
+  ```
+
+- 실행 중인 Nginx를 멈추기 위해서 `stop` 명령어를 사용한다.
+
+	```bash
+	sudo service nginx stop
+ 	```
+
+- 다시 Nginx를 실행하려면 `start` 명령어를 사용한다.
+
+	```bash
+	sudo service nginx start
+ 	```	
+
+- 환경변수 등록 과정은 다음과 같다.
+
+	- Nginx 디렉토리로 이동한다.
+
+		```bash
+		cd /etc/nginx
+	 	```
+
+	- `sites-available` 폴더로 이동한다.
+
+		```bash
+		cd sites-available
+	 	```
+
+	- `ls`를 이용해 조회했을 때 존재하는 `default`라는 파일을 삭제한 후 다시 생성한다.
+
+		```bash
+		ls												# default
+  	sudo rm default 					# default 삭제
+  	sudo touch default.conf		# default.conf 파일 생성
+  	sudo vi default.conf			# default.conf 파일 수정
+	 	```
+
+  - `default.conf` 파일 내부에 다음의 설정 내용을 추가 후 저장한다.
+
+		```js
+		server {
+		  listen 80 default;
+      listen [::]:80 default;
+
+		  server_name <EC2의 퍼블릭 IP>;
+
+		  location / {
+        proxy_pass http://<EC2의 퍼블릭 IP>:3000;
+      }
+		}
+		```
+
+- Nginx를 재실행한다.
+
+  ```bash
+  sudo service nginx restart
+  ```
 
 <br />
 
