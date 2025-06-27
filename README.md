@@ -2526,26 +2526,13 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 	- `ls`를 이용해 조회했을 때 존재하는 `default`라는 파일을 삭제한 후 다시 생성한다.
 
 		```bash
-		ls												# default
-  	sudo rm default 					# default 삭제
-  	sudo touch default.conf		# default.conf 파일 생성
-  	sudo vi default.conf			# default.conf 파일 수정
-	 	```
+		ls # default
+		sudo rm default # default 삭제
+		sudo touch default.conf # default.conf 파일 생성
+		sudo vi default.conf # default.conf 파일 수정
+		```
 
   - `default.conf` 파일 내부에 다음의 설정 내용을 추가 후 저장한다.
-
-		```js
-		server {
-		  listen 80 default;
-      listen [::]:80 default;
-
-		  server_name <EC2의 퍼블릭 IP>;
-
-		  location / {
-        proxy_pass http://<EC2의 퍼블릭 IP>:3000;
-      }
-		}
-		```
 
 - Nginx를 재실행한다.
 
