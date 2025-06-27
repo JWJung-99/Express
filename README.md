@@ -2464,6 +2464,12 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 
 	<img width="40%" alt="image" src="https://github.com/user-attachments/assets/cbce7b4b-491e-4bd3-be0a-64eab895ad30" />
 
+### AWS 배포
+
+강의 내용과 다르게 S3, CodeDeploy를 활용하여 CI, CD 환경을 구축해보고자 한다.
+
+[블로그]()
+
 <br />
 
 ## :book: 참고
