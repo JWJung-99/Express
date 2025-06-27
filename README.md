@@ -19,6 +19,7 @@
 13. [MongoDB 데이터베이스 연결](#onethree-mongodb-데이터베이스-연결)
 14. [MongoDB+Express](#onefour-mongodb-express-연동)
 15. [HTTP Authentication](#onefive-http-authentication)
+16. [AWS EC2 RDS](#onesix-aws-ec2-rds)
 
 [참고](#book-참고)
 
@@ -2386,6 +2387,82 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
  	```
 
 	<img width="50%" alt="image" src="https://github.com/user-attachments/assets/649b8740-f0c9-4de2-bf5a-7d4cbf0bdfee" />
+
+<br />
+
+## :one::six: AWS EC2 RDS
+
+### AWS RDS 설정
+
+- 이전에는 RDS에 퍼블릭으로 접속했지만 이제 EC2를 이용해서 서버에서만 RDS에 접근할 수 있도록 하기 위해 인스턴스를 연결한다.
+
+	<img width="50%" alt="image" src="https://github.com/user-attachments/assets/1d40d2c4-7aaa-4e79-9bde-19d245daa22e" />
+
+<br />
+
+### AWS EC2 RDS 연결
+
+- EC2에 접속해서 먼저 apt update를 진행한다.
+
+	```bash
+	sudo apt update
+	```
+
+- MySQL 서버를 설치한다.
+
+	```bash
+	sudo apt install mysql-server
+	```
+
+- URL 로 데이터를 전송하여 서버에 데이터를 보내거나 가져올때 사용하기 위해 `curl`을 설치한다.
+
+	```bash
+	sudo apt-get install curl
+	```
+
+- 다음으로 Node.js를 설치해야 한다. `nvm`을 활용하여 Node.js를 설치하기 위해 [공식문서](https://docs.aws.amazon.com/ko_kr/sdk-for-javascript/v2/developer-guide/setting-up-node-on-ec2-instance.html)에서 제공하는 명령어를 입력해 `nvm`을 설치한다.
+
+	```bash
+ 	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+ 	```
+
+- `nvm`을 로드한다.
+
+	```bash
+	. ~/.nvm/nvm.sh
+ 	```
+
+- 최신 LTS 버전의 Node.js를 설치한다.
+
+  ```bash
+  nvm install --lts
+  ```
+
+- Node.js가 올바르게 설치되고 실행되는지 테스트한다.
+
+	```bash
+	node -e "console.log('Running Node.js ' + process.version)"
+	```
+
+- MySQL에 접속한다. RDS의 엔드포인트를 붙여넣고, 포트는 MySQL이 사용하는 `3306`번 포트로 설정한다. 이어서 사용자 이름과 비밀번호를 입력하면 접속할 수 있다.
+
+	```bash
+ 	mysql -h [RDS의 엔드포인트] -P 3306 -u [사용자 이름] -p
+
+ 	Enter password: [비밀번호]
+ 	```
+
+	<img width="30%" alt="image" src="https://github.com/user-attachments/assets/0d3403f9-e886-42cc-a449-f118bd116c49" />
+
+- 다음 명령어를 입력해 `db_test` 데이터베이스로 이동할 수 있다.
+
+	```sql
+	use db_test;
+ 	```
+
+- 테이블을 생성하고 데이터를 추가한 후 다음과 같이 데이터를 확인할 수 있다.
+
+	<img width="40%" alt="image" src="https://github.com/user-attachments/assets/cbce7b4b-491e-4bd3-be0a-64eab895ad30" />
 
 <br />
 
