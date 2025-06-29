@@ -2527,8 +2527,8 @@ AWS 계정 보안은 신중해야 한다. 국내에도 AWS 해킹으로 몇 억�
 		```bash
 		ls # default
 		sudo rm default # default 삭제
-		sudo touch default.conf # default.conf 파일 생성
-		sudo vi default.conf # default.conf 파일 수정
+		sudo touch default # default 파일 생성
+		sudo vi default # default 파일 수정
 		```
 
   - `default.conf` 파일 내부에 다음의 설정 내용을 추가 후 저장한다.
